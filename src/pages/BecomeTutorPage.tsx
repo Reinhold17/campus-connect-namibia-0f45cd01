@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/auth-context';
 import { GraduationCap, CheckCircle } from 'lucide-react';
 
 export default function BecomeTutorPage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {
@@ -47,7 +47,7 @@ export default function BecomeTutorPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="fullName">Full Name</Label>
-              <Input id="fullName" defaultValue={user?.name || ''} required />
+              <Input id="fullName" defaultValue={profile?.name || ''} required />
             </div>
             <div>
               <Label htmlFor="email">Email</Label>

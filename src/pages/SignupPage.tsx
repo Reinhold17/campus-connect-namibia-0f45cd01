@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth, AppRole } from '@/lib/auth-context';
 import { Navbar } from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GraduationCap } from 'lucide-react';
-import { UserRole } from '@/lib/types';
+import { toast } from 'sonner';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('student');
+  const [role, setRole] = useState<AppRole>('student');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -21,10 +21,16 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await signup(name, email, password, role);
-    setLoading(false);
-    if (role === 'tutor') navigate('/become-tutor');
-    else navigate('/student');
+    try {
+      await signup(name, email, password, role);
+      toast.success('Account created successfully!');
+      if (role === 'tutor') navigate('/become-tutor');
+      else navigate('/student');
+    } catch (error: any) {
+      toast.error(error.message || 'Signup failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,7 +61,7 @@ export default function SignupPage() {
             </div>
             <div>
               <Label>I am a</Label>
-              <Select value={role} onValueChange={(v) => setRole(v as UserRole)}>
+              <Select value={role} onValueChange={(v) => setRole(v as AppRole)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

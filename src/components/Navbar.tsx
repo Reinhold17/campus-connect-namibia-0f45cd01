@@ -5,14 +5,14 @@ import { GraduationCap, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
 export function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, role, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const dashboardPath = user?.role === 'admin' ? '/admin' : user?.role === 'tutor' ? '/tutor' : '/student';
+  const dashboardPath = role === 'admin' ? '/admin' : role === 'tutor' ? '/tutor' : '/student';
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 

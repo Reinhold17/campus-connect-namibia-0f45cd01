@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { GraduationCap } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -17,12 +18,16 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await login(email, password);
-    setLoading(false);
-    // Redirect based on demo accounts
-    if (email.includes('admin')) navigate('/admin');
-    else if (email.includes('tutor')) navigate('/tutor');
-    else navigate('/student');
+    try {
+      await login(email, password);
+      toast.success('Logged in successfully!');
+      // Role-based redirect will happen via auth state change + dashboard access
+      navigate('/');
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,14 +61,6 @@ export default function LoginPage() {
             Don't have an account?{' '}
             <Link to="/signup" className="font-medium text-primary hover:underline">Sign up</Link>
           </p>
-
-          <div className="mt-6 rounded-lg border bg-muted/50 p-4 text-xs text-muted-foreground">
-            <p className="font-semibold">Demo Accounts:</p>
-            <p>Student: student@unam.na</p>
-            <p>Tutor: tutor@unam.na</p>
-            <p>Admin: admin@campusconnect.na</p>
-            <p className="mt-1">(Any password works)</p>
-          </div>
         </div>
       </div>
     </div>
