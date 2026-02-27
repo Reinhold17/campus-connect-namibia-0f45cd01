@@ -20,7 +20,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, title, items }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -88,11 +88,11 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex h-16 items-center border-b bg-card px-6">
           <h1 className="font-display text-xl font-bold">{title}</h1>
-          {user && (
+          {profile && (
             <div className="ml-auto flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">{user.name}</span>
+              <span className="text-sm text-muted-foreground">{profile.name}</span>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                {user.name.split(' ').map(n => n[0]).join('')}
+                {profile.name.split(' ').map(n => n[0]).join('')}
               </div>
             </div>
           )}
