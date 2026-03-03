@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          created_at: string
+          id: string
+          payment_proof_url: string | null
+          payment_status: string
+          session_id: string
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payment_proof_url?: string | null
+          payment_status?: string
+          session_id: string
+          status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payment_proof_url?: string | null
+          payment_status?: string
+          session_id?: string
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_student_id_fkey1"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       faculties: {
         Row: {
           created_at: string
@@ -122,6 +170,72 @@ export type Database = {
           year_of_study?: string | null
         }
         Relationships: []
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          date: string
+          duration_minutes: number
+          id: string
+          location: string
+          max_students: number
+          module_id: string | null
+          price: number
+          status: string
+          subject: string
+          time: string
+          tutor_id: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          duration_minutes?: number
+          id?: string
+          location?: string
+          max_students?: number
+          module_id?: string | null
+          price?: number
+          status?: string
+          subject: string
+          time: string
+          tutor_id: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          duration_minutes?: number
+          id?: string
+          location?: string
+          max_students?: number
+          module_id?: string | null
+          price?: number
+          status?: string
+          subject?: string
+          time?: string
+          tutor_id?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_tutor_id_fkey1"
+            columns: ["tutor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
       tutor_modules: {
         Row: {
