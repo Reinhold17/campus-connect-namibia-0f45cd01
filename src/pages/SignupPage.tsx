@@ -9,9 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { GraduationCap } from 'lucide-react';
 import { toast } from 'sonner';
 
+const NAMIBIAN_PHONE_REGEX = /^(\+264|0)(81|85|61|62|63|64|65|66|67)\d{7}$/;
+
 export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<AppRole>('student');
   const [loading, setLoading] = useState(false);
@@ -20,9 +23,14 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanPhone = phone.replace(/\s/g, '');
+    if (!NAMIBIAN_PHONE_REGEX.test(cleanPhone)) {
+      toast.error('Please enter a valid Namibian phone number (e.g. 0811234567 or +264811234567)');
+      return;
+    }
     setLoading(true);
     try {
-      await signup(name, email, password, role);
+      await signup(name, email, password, role, cleanPhone);
       toast.success('Account created successfully!');
       if (role === 'tutor') navigate('/become-tutor');
       else navigate('/student');
@@ -54,6 +62,11 @@ export default function SignupPage() {
             <div>
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@university.na" required />
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input id="phone" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="0811234567" required />
+              <p className="mt-1 text-xs text-muted-foreground">Namibian format: 081/085/061… (e.g. 0811234567)</p>
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
