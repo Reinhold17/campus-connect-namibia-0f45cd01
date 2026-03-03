@@ -14,6 +14,64 @@ export type Database = {
   }
   public: {
     Tables: {
+      faculties: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          university_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          university_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          university_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faculties_university_id_fkey"
+            columns: ["university_id"]
+            isOneToOne: false
+            referencedRelation: "universities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modules: {
+        Row: {
+          created_at: string
+          faculty_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          faculty_id: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          faculty_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modules_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "faculties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -21,6 +79,7 @@ export type Database = {
           email: string
           id: string
           name: string
+          phone_number: string | null
           rating: number | null
           review_count: number | null
           status: string
@@ -36,6 +95,7 @@ export type Database = {
           email: string
           id?: string
           name: string
+          phone_number?: string | null
           rating?: number | null
           review_count?: number | null
           status?: string
@@ -51,6 +111,7 @@ export type Database = {
           email?: string
           id?: string
           name?: string
+          phone_number?: string | null
           rating?: number | null
           review_count?: number | null
           status?: string
@@ -59,6 +120,53 @@ export type Database = {
           updated_at?: string
           user_id?: string
           year_of_study?: string | null
+        }
+        Relationships: []
+      }
+      tutor_modules: {
+        Row: {
+          created_at: string
+          id: string
+          module_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          module_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          module_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tutor_modules_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      universities: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
         }
         Relationships: []
       }
