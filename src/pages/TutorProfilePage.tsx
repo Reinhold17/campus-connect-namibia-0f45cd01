@@ -1,18 +1,35 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { RatingStars } from '@/components/RatingStars';
 import { StatusBadge } from '@/components/StatusBadge';
+import { useAuth } from '@/lib/auth-context';
 import { mockTutors, mockSessions, mockReviews } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, MapPin, BookOpen, Calendar, Clock, Users, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function TutorProfilePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated, role } = useAuth();
   const tutor = mockTutors.find(t => t.id === id);
   const sessions = mockSessions.filter(s => s.tutorId === id);
   const reviews = mockReviews.filter(r => r.tutorId === id);
+
+  const handleBook = () => {
+    if (!isAuthenticated) {
+      toast.info('Please sign up or log in to book a session');
+      navigate('/signup');
+      return;
+    }
+    if (role !== 'student') {
+      toast.error('Only students can book sessions');
+      return;
+    }
+    toast.success('Booking request sent!');
+  };
 
   if (!tutor) {
     return (
@@ -85,7 +102,9 @@ export default function TutorProfilePage() {
                       <p className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" />{session.enrolledStudents.length}/{session.maxStudents} enrolled</p>
                     )}
                   </div>
-                  <Button className="mt-4 w-full" size="sm">Book This Session</Button>
+                  <Button className="mt-4 w-full" size="sm" onClick={handleBook}>
+                    {isAuthenticated ? 'Book This Session' : 'Sign Up to Book'}
+                  </Button>
                 </div>
               ))}
             </div>
