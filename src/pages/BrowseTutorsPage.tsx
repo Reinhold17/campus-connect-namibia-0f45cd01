@@ -1,30 +1,115 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { TutorCard } from '@/components/TutorCard';
-import { mockTutors } from '@/lib/mock-data';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface University { id: string; name: string; }
+interface Faculty { id: string; name: string; university_id: string; }
+interface Module { id: string; name: string; faculty_id: string; }
+interface TutorProfile {
+  id: string; user_id: string; name: string; email: string; university?: string;
+  subjects?: string[]; bio?: string; rating?: number; review_count?: number; status: string;
+}
 
 export default function BrowseTutorsPage() {
   const [search, setSearch] = useState('');
-  const [university, setUniversity] = useState('all');
-  const [subject, setSubject] = useState('all');
+  const [universityId, setUniversityId] = useState('all');
+  const [facultyId, setFacultyId] = useState('all');
+  const [moduleId, setModuleId] = useState('all');
   const [sortBy, setSortBy] = useState('rating');
 
-  const universities = [...new Set(mockTutors.map(t => t.university).filter(Boolean))];
-  const subjects = [...new Set(mockTutors.flatMap(t => t.subjects || []))];
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [faculties, setFaculties] = useState<Faculty[]>([]);
+  const [modules, setModules] = useState<Module[]>([]);
+  const [tutors, setTutors] = useState<TutorProfile[]>([]);
+  const [tutorModuleMap, setTutorModuleMap] = useState<Record<string, string[]>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [uniRes, facRes, modRes, tutorRes, tmRes] = await Promise.all([
+        supabase.from('universities').select('*').order('name'),
+        supabase.from('faculties').select('*').order('name'),
+        supabase.from('modules').select('*').order('name'),
+        supabase.from('profiles').select('*').eq('status', 'approved'),
+        supabase.from('tutor_modules').select('user_id, module_id'),
+      ]);
+      setUniversities(uniRes.data || []);
+      setFaculties(facRes.data || []);
+      setModules(modRes.data || []);
+      setTutors(tutorRes.data as TutorProfile[] || []);
+
+      const map: Record<string, string[]> = {};
+      (tmRes.data || []).forEach((tm: any) => {
+        if (!map[tm.user_id]) map[tm.user_id] = [];
+        map[tm.user_id].push(tm.module_id);
+      });
+      setTutorModuleMap(map);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const filteredFaculties = useMemo(() =>
+    universityId === 'all' ? faculties : faculties.filter(f => f.university_id === universityId),
+    [universityId, faculties]
+  );
+
+  const filteredModules = useMemo(() =>
+    facultyId === 'all' ? modules : modules.filter(m => m.faculty_id === facultyId),
+    [facultyId, modules]
+  );
+
+  // Reset dependent filters
+  useEffect(() => { setFacultyId('all'); setModuleId('all'); }, [universityId]);
+  useEffect(() => { setModuleId('all'); }, [facultyId]);
 
   const filtered = useMemo(() => {
-    let list = mockTutors.filter(t => t.status === 'approved');
-    if (search) list = list.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) || t.subjects?.some(s => s.toLowerCase().includes(search.toLowerCase())));
-    if (university !== 'all') list = list.filter(t => t.university === university);
-    if (subject !== 'all') list = list.filter(t => t.subjects?.includes(subject));
-    if (sortBy === 'rating') list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    else if (sortBy === 'reviews') list.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));
+    let list = tutors;
+
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(t =>
+        t.name.toLowerCase().includes(q) ||
+        t.subjects?.some(s => s.toLowerCase().includes(q))
+      );
+    }
+
+    if (moduleId !== 'all') {
+      list = list.filter(t => tutorModuleMap[t.user_id]?.includes(moduleId));
+    } else if (facultyId !== 'all') {
+      const modIds = modules.filter(m => m.faculty_id === facultyId).map(m => m.id);
+      list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+    } else if (universityId !== 'all') {
+      const facIds = faculties.filter(f => f.university_id === universityId).map(f => f.id);
+      const modIds = modules.filter(m => facIds.includes(m.faculty_id)).map(m => m.id);
+      list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+    }
+
+    if (sortBy === 'rating') list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    else if (sortBy === 'reviews') list = [...list].sort((a, b) => (b.review_count || 0) - (a.review_count || 0));
+
     return list;
-  }, [search, university, subject, sortBy]);
+  }, [search, universityId, facultyId, moduleId, sortBy, tutors, tutorModuleMap, faculties, modules]);
+
+  // Map tutor profile to TutorCard-compatible shape
+  const toUser = (t: TutorProfile) => ({
+    id: t.user_id,
+    name: t.name,
+    email: t.email,
+    role: 'tutor' as const,
+    status: t.status as 'approved',
+    university: t.university,
+    subjects: t.subjects,
+    bio: t.bio,
+    rating: t.rating ? Number(t.rating) : undefined,
+    reviewCount: t.review_count ?? undefined,
+    createdAt: '',
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -35,23 +120,30 @@ export default function BrowseTutorsPage() {
           <p className="mt-1 text-muted-foreground">Find the perfect tutor for your needs</p>
         </div>
 
-        <div className="mb-8 grid gap-3 rounded-xl border bg-card p-4 shadow-card sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mb-8 grid gap-3 rounded-xl border bg-card p-4 shadow-card sm:grid-cols-2 lg:grid-cols-5">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Search tutors..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
           </div>
-          <Select value={university} onValueChange={setUniversity}>
+          <Select value={universityId} onValueChange={setUniversityId}>
             <SelectTrigger><SelectValue placeholder="University" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Universities</SelectItem>
-              {universities.map(u => <SelectItem key={u} value={u!}>{u}</SelectItem>)}
+              {universities.map(u => <SelectItem key={u.id} value={u.id}>{u.name}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Select value={subject} onValueChange={setSubject}>
-            <SelectTrigger><SelectValue placeholder="Subject" /></SelectTrigger>
+          <Select value={facultyId} onValueChange={setFacultyId}>
+            <SelectTrigger><SelectValue placeholder="Faculty" /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Subjects</SelectItem>
-              {subjects.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              <SelectItem value="all">All Faculties</SelectItem>
+              {filteredFaculties.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={moduleId} onValueChange={setModuleId}>
+            <SelectTrigger><SelectValue placeholder="Module" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Modules</SelectItem>
+              {filteredModules.map(m => <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={sortBy} onValueChange={setSortBy}>
@@ -63,11 +155,13 @@ export default function BrowseTutorsPage() {
           </Select>
         </div>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="py-20 text-center text-muted-foreground">Loading tutors...</div>
+        ) : filtered.length === 0 ? (
           <div className="py-20 text-center text-muted-foreground">No tutors found matching your criteria.</div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map(tutor => <TutorCard key={tutor.id} tutor={tutor} />)}
+            {filtered.map(tutor => <TutorCard key={tutor.user_id} tutor={toUser(tutor)} />)}
           </div>
         )}
       </div>
