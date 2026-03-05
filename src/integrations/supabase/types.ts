@@ -97,18 +97,21 @@ export type Database = {
           faculty_id: string
           id: string
           name: string
+          whatsapp_group_url: string | null
         }
         Insert: {
           created_at?: string
           faculty_id: string
           id?: string
           name: string
+          whatsapp_group_url?: string | null
         }
         Update: {
           created_at?: string
           faculty_id?: string
           id?: string
           name?: string
+          whatsapp_group_url?: string | null
         }
         Relationships: [
           {

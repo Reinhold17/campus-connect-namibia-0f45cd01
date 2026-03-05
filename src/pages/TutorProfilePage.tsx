@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { GraduationCap, MapPin, BookOpen, Calendar, Clock, Users, AlertTriangle, Loader2 } from 'lucide-react';
+import { GraduationCap, BookOpen, Calendar, Clock, Users, AlertTriangle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -35,7 +35,7 @@ export default function TutorProfilePage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('sessions')
-        .select('*')
+        .select('*, module:modules!sessions_module_id_fkey ( name )')
         .eq('tutor_id', id!)
         .eq('status', 'active')
         .gte('date', new Date().toISOString().split('T')[0]);
@@ -118,7 +118,6 @@ export default function TutorProfilePage() {
   }
 
   const initials = tutor.name.split(' ').map((n: string) => n[0]).join('');
-  const canOffer1on1 = (tutor.rating || 0) >= 4.5;
 
   return (
     <div className="min-h-screen bg-background">
@@ -152,12 +151,6 @@ export default function TutorProfilePage() {
         {/* Sessions */}
         <div className="mt-8">
           <h2 className="mb-4 font-display text-xl font-bold">Available Sessions</h2>
-          {!canOffer1on1 && (
-            <div className="mb-4 flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
-              <AlertTriangle className="h-4 w-4" />
-              Tutor not yet eligible for 1-on-1 sessions (requires rating ≥ 4.5)
-            </div>
-          )}
           {sessions.length === 0 ? (
             <p className="text-muted-foreground">No upcoming sessions available.</p>
           ) : (
@@ -171,16 +164,15 @@ export default function TutorProfilePage() {
                       <Badge variant={session.type === 'one-on-one' ? 'default' : 'secondary'}>
                         {session.type === 'one-on-one' ? '1-on-1' : 'Group'}
                       </Badge>
-                      <span className="font-display text-lg font-bold text-accent">N${session.price}</span>
+                      <Badge variant="outline" className="text-xs gap-1">
+                        <Users className="h-3 w-3" />
+                        {enrolled}/{session.max_students} enrolled
+                      </Badge>
                     </div>
-                    <h3 className="mt-3 font-display text-lg font-bold">{session.subject}</h3>
+                    <h3 className="mt-3 font-display text-lg font-bold">{session.module?.name || session.subject}</h3>
                     <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-                      <p className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />Location revealed after payment</p>
                       <p className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{session.date}</p>
                       <p className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{session.time}</p>
-                      {session.type === 'group' && (
-                        <p className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" />{enrolled}/{session.max_students} enrolled</p>
-                      )}
                     </div>
                     <Button
                       className="mt-4 w-full"
@@ -188,7 +180,7 @@ export default function TutorProfilePage() {
                       disabled={isFull || bookMutation.isPending}
                       onClick={() => handleBook(session.id)}
                     >
-                      {isFull ? 'Session Full' : isAuthenticated ? 'Book This Session' : 'Sign Up to Book'}
+                      {isFull ? 'Session Full' : isAuthenticated ? 'Book Tutor' : 'Sign Up to Book'}
                     </Button>
                   </div>
                 );

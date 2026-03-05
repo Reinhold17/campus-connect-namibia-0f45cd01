@@ -1,0 +1,1 @@
+ALTER TABLE public.modules ADD COLUMN whatsapp_group_url text;
