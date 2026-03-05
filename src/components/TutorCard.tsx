@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { User } from '@/lib/types';
 import { RatingStars } from '@/components/RatingStars';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, BookOpen, GraduationCap } from 'lucide-react';
+import { GraduationCap, BookOpen, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface TutorCardProps {
@@ -30,7 +30,7 @@ export function TutorCard({ tutor }: TutorCardProps) {
         </div>
       </div>
 
-      <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{tutor.bio}</p>
+      {tutor.bio && <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{tutor.bio}</p>}
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {tutor.subjects?.map((subject) => (
@@ -42,12 +42,10 @@ export function TutorCard({ tutor }: TutorCardProps) {
       </div>
 
       <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span>Group: N$350</span>
-          {(tutor.rating || 0) >= 4.5 && (
-            <span className="text-accent font-medium">1-on-1: N$500</span>
-          )}
-        </div>
+        <Badge variant="outline" className="text-xs gap-1">
+          <Users className="h-3 w-3" />
+          Currently Enrolled
+        </Badge>
         <Button size="sm" asChild>
           <Link to={`/tutor/${tutor.id}`}>View Profile</Link>
         </Button>
