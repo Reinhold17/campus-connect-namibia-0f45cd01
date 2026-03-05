@@ -72,7 +72,10 @@ export default function StudentDashboard() {
         <div>
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-lg font-bold">My Bookings</h2>
-            <Button size="sm" asChild><Link to="/browse">Browse Tutors</Link></Button>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" asChild><Link to="/become-tutor">Become a Tutor</Link></Button>
+              <Button size="sm" asChild><Link to="/browse">Browse Tutors</Link></Button>
+            </div>
           </div>
           {isLoading ? (
             <p className="text-muted-foreground">Loading bookings...</p>

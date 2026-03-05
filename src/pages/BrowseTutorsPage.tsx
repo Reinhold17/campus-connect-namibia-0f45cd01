@@ -31,17 +31,29 @@ export default function BrowseTutorsPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [uniRes, facRes, modRes, tutorRes, tmRes] = await Promise.all([
+      const [uniRes, facRes, modRes, tutorRolesRes, tmRes] = await Promise.all([
         supabase.from('universities').select('*').order('name'),
         supabase.from('faculties').select('*').order('name'),
         supabase.from('modules').select('*').order('name'),
-        supabase.from('profiles').select('*').eq('status', 'approved'),
+        supabase.from('user_roles').select('user_id').eq('role', 'tutor'),
         supabase.from('tutor_modules').select('user_id, module_id'),
       ]);
       setUniversities(uniRes.data || []);
       setFaculties(facRes.data || []);
       setModules(modRes.data || []);
-      setTutors(tutorRes.data as TutorProfile[] || []);
+
+      // Only fetch profiles for users with tutor role
+      const tutorUserIds = (tutorRolesRes.data || []).map((r: any) => r.user_id);
+      if (tutorUserIds.length > 0) {
+        const { data: tutorProfiles } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('status', 'approved')
+          .in('user_id', tutorUserIds);
+        setTutors(tutorProfiles as TutorProfile[] || []);
+      } else {
+        setTutors([]);
+      }
 
       const map: Record<string, string[]> = {};
       (tmRes.data || []).forEach((tm: any) => {
