@@ -6,7 +6,7 @@ import { GraduationCap, BookOpen, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface TutorCardProps {
-  tutor: User;
+  tutor: User & { user_id?: string };
 }
 
 export function TutorCard({ tutor }: TutorCardProps) {
