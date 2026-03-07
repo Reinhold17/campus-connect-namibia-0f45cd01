@@ -111,10 +111,11 @@ export default function TutorDashboard() {
           ) : (
             <div className="space-y-3">
               {sessions.map(session => (
-                <div key={session.id} className="flex items-center justify-between rounded-xl border bg-card p-4 shadow-card">
-                  <div>
-                    <h3 className="font-display font-bold">{session.subject}</h3>
-                    <p className="text-sm text-muted-foreground">{session.date} at {session.time} · {session.location}</p>
+                <div key={session.id} className="flex flex-col gap-2 rounded-xl border bg-card p-4 shadow-card sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <h3 className="font-display font-bold truncate">{session.subject}</h3>
+                    <p className="text-sm text-muted-foreground">{session.date} at {session.time}</p>
+                    <p className="text-xs text-muted-foreground truncate">{session.location}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <StatusBadge status={session.status === 'active' ? 'confirmed' : session.status as any} />
