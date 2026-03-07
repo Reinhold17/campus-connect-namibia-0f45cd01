@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
-import { GraduationCap, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { GraduationCap, LogOut, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarItem {
@@ -20,7 +19,8 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, title, items }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const { user, profile, logout } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { profile, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,11 +29,77 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
     navigate('/');
   };
 
+  const sidebarContent = (
+    <>
+      <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary">
+          <GraduationCap className="h-4 w-4 text-sidebar-primary-foreground" />
+        </div>
+        <span className="font-display text-sm font-bold text-sidebar-foreground">Campus Connect</span>
+      </div>
+
+      <nav className="flex-1 space-y-1 p-2">
+        {items.map((item) => {
+          const isActive = location.pathname === item.to;
+          return (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={() => setMobileOpen(false)}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+              )}
+            >
+              <item.icon className="h-4 w-4 shrink-0" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="border-t border-sidebar-border p-2">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50"
+        >
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar */}
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Mobile sidebar */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar transition-transform duration-300 lg:hidden",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex items-center justify-end p-2">
+          <button onClick={() => setMobileOpen(false)} className="rounded-lg p-1.5 text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        {sidebarContent}
+      </aside>
+
+      {/* Desktop sidebar */}
       <aside className={cn(
-        "flex flex-col border-r bg-sidebar transition-all duration-300",
+        "hidden flex-col border-r bg-sidebar transition-all duration-300 lg:flex",
         collapsed ? "w-16" : "w-64"
       )}>
         <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4">
@@ -86,18 +152,24 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 items-center border-b bg-card px-6">
-          <h1 className="font-display text-xl font-bold">{title}</h1>
+        <header className="flex h-14 items-center gap-3 border-b bg-card px-4 lg:h-16 lg:px-6">
+          <button
+            className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent lg:hidden"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <h1 className="font-display text-lg font-bold lg:text-xl">{title}</h1>
           {profile && (
             <div className="ml-auto flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">{profile.name}</span>
+              <span className="hidden text-sm text-muted-foreground sm:inline">{profile.name}</span>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                 {profile.name.split(' ').map(n => n[0]).join('')}
               </div>
             </div>
           )}
         </header>
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           {children}
         </main>
       </div>
