@@ -47,7 +47,7 @@ export function TutorCard({ tutor }: TutorCardProps) {
           Currently Enrolled
         </Badge>
         <Button size="sm" asChild>
-          <Link to={`/tutor/${tutor.id}`}>View Profile</Link>
+          <Link to={`/tutors/${(tutor as any).user_id || tutor.id}`}>View Profile</Link>
         </Button>
       </div>
     </div>
