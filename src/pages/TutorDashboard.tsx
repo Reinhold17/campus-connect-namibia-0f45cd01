@@ -63,7 +63,7 @@ export default function TutorDashboard() {
   return (
     <DashboardLayout title="Tutor Dashboard" items={sidebarItems}>
       <div className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <div className="rounded-xl border bg-card p-5 shadow-card">
             <p className="text-sm text-muted-foreground">Active Sessions</p>
             <p className="mt-1 font-display text-2xl font-bold">{sessions.filter(s => s.status === 'active').length}</p>
