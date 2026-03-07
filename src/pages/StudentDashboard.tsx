@@ -67,11 +67,11 @@ export default function StudentDashboard() {
 
         {/* Bookings */}
         <div>
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-display text-lg font-bold">My Bookings</h2>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" asChild><Link to="/become-tutor">Become a Tutor</Link></Button>
-              <Button size="sm" asChild><Link to="/browse">Browse Tutors</Link></Button>
+              <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none"><Link to="/become-tutor">Become a Tutor</Link></Button>
+              <Button size="sm" asChild className="flex-1 sm:flex-none"><Link to="/browse">Browse Tutors</Link></Button>
             </div>
           </div>
           {isLoading ? (

@@ -105,7 +105,7 @@ export default function AdminDashboard() {
     <DashboardLayout title="Admin Dashboard" items={sidebarItems}>
       <div className="space-y-6">
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
           <div className="rounded-xl border bg-card p-5 shadow-card">
             <div className="flex items-center gap-2 text-sm text-muted-foreground"><Users className="h-4 w-4" />Total Users</div>
             <p className="mt-1 font-display text-2xl font-bold">{stats?.students || 0}</p>
