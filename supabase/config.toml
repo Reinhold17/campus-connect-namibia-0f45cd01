@@ -1,1 +1,7 @@
 project_id = "tvlxdabkimilipreomnd"
+
+[functions.ai-assistant]
+verify_jwt = false
+
+[functions.notify-admin-tutor-signup]
+verify_jwt = false
