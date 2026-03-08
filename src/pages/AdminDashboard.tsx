@@ -92,7 +92,7 @@ export default function AdminDashboard() {
   });
 
   const confirmPayment = useMutation({
-    mutationFn: async ({ bookingId, confirm }: { bookingId: string; confirm: boolean }) => {
+    mutationFn: async ({ bookingId, confirm, studentId, subject }: { bookingId: string; confirm: boolean; studentId: string; subject: string }) => {
       const { error } = await supabase
         .from('bookings')
         .update({
@@ -101,9 +101,16 @@ export default function AdminDashboard() {
         })
         .eq('id', bookingId);
       if (error) throw error;
+
+      // Notify student about payment status
+      await sendNotification({
+        type: 'payment_update',
+        recipientUserId: studentId,
+        data: { paymentStatus: confirm ? 'confirmed' : 'rejected', subject },
+      });
     },
     onSuccess: (_, { confirm }) => {
-      toast.success(confirm ? 'Payment confirmed!' : 'Payment rejected.');
+      toast.success(confirm ? 'Payment confirmed & student notified!' : 'Payment rejected & student notified.');
       queryClient.invalidateQueries({ queryKey: ['admin-pending-payments'] });
     },
     onError: (err: any) => toast.error(err.message),
