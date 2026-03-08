@@ -246,13 +246,19 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
 function PaymentStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     pending: 'bg-muted text-muted-foreground',
+    pending_payment: 'bg-warning/10 text-warning',
+    pending_verification: 'bg-accent/10 text-accent',
     uploaded: 'bg-warning/10 text-warning',
     confirmed: 'bg-success/10 text-success',
     rejected: 'bg-destructive/10 text-destructive',
   };
+  const labels: Record<string, string> = {
+    pending_payment: 'Pending Payment',
+    pending_verification: 'Pending Verification',
+  };
   return (
     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles[status] || styles.pending}`}>
-      Payment: {status}
+      Payment: {labels[status] || status}
     </span>
   );
 }
