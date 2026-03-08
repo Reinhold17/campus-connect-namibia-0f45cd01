@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, ArrowRight } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -19,10 +19,10 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 font-body text-sm font-semibold uppercase tracking-wider text-primary-foreground/50">Platform</h4>
+            <h4 className="mb-3 font-body text-sm font-semibold uppercase tracking-wider text-primary-foreground/50">For Students</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/browse" className="text-primary-foreground/70 transition-colors hover:text-accent">Browse Tutors</Link></li>
-              <li><Link to="/become-tutor" className="text-primary-foreground/70 transition-colors hover:text-accent">Become a Tutor</Link></li>
+              <li><Link to="/signup" className="text-primary-foreground/70 transition-colors hover:text-accent">Create Account</Link></li>
               <li><Link to="/#how-it-works" className="text-primary-foreground/70 transition-colors hover:text-accent">How It Works</Link></li>
             </ul>
           </div>
@@ -37,8 +37,18 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 font-body text-sm font-semibold uppercase tracking-wider text-primary-foreground/50">Contact</h4>
-            <ul className="space-y-2 text-sm text-primary-foreground/70">
+            <h4 className="mb-3 font-body text-sm font-semibold uppercase tracking-wider text-primary-foreground/50">For Tutors</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/become-tutor" className="inline-flex items-center gap-1 text-accent font-medium transition-colors hover:text-accent/80">
+                  Become a Tutor <ArrowRight className="h-3 w-3" />
+                </Link>
+              </li>
+              <li><Link to="/login" className="text-primary-foreground/70 transition-colors hover:text-accent">Tutor Login</Link></li>
+            </ul>
+
+            <h4 className="mb-2 mt-6 font-body text-sm font-semibold uppercase tracking-wider text-primary-foreground/50">Contact</h4>
+            <ul className="space-y-1 text-sm text-primary-foreground/70">
               <li>info@campusconnect.na</li>
               <li>Windhoek, Namibia</li>
             </ul>
