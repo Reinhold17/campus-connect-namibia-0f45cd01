@@ -878,11 +878,25 @@ function PaymentCard({ payment, onConfirm }: { payment: any; onConfirm: any }) {
   const [proofUrl, setProofUrl] = useState<string | null>(null);
 
   const handleViewProof = async () => {
-    if (!payment.payment_proof_url) return;
-    const { data } = await supabase.storage.from('payment-proofs').createSignedUrl(payment.payment_proof_url, 300);
-    if (data?.signedUrl) { setProofUrl(data.signedUrl); setViewOpen(true); }
-    else toast.error('Could not load proof image');
+    if (!payment.payment_proof_url) {
+      toast.error('No proof of payment uploaded');
+      return;
+    }
+    const { data, error } = await supabase.storage.from('payment-proofs').createSignedUrl(payment.payment_proof_url, 600);
+    if (error) {
+      console.error('Signed URL error:', error);
+      toast.error('Could not load proof: ' + error.message);
+      return;
+    }
+    if (data?.signedUrl) {
+      setProofUrl(data.signedUrl);
+      setViewOpen(true);
+    } else {
+      toast.error('Could not load proof image');
+    }
   };
+
+  const isPdf = payment.payment_proof_url?.endsWith('.pdf');
 
   return (
     <>
@@ -902,7 +916,10 @@ function PaymentCard({ payment, onConfirm }: { payment: any; onConfirm: any }) {
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Payment Proof</DialogTitle></DialogHeader>
-          {proofUrl && <img src={proofUrl} alt="Payment proof" className="w-full rounded-lg" />}
+          {proofUrl && (isPdf 
+            ? <iframe src={proofUrl} className="w-full h-[500px] rounded-lg" title="Payment proof PDF" />
+            : <img src={proofUrl} alt="Payment proof" className="w-full rounded-lg" />
+          )}
         </DialogContent>
       </Dialog>
     </>
