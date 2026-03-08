@@ -45,6 +45,9 @@ const App = () => (
             <Route path="/tutors/:id" element={<TutorProfilePage />} />
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/*" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/trust-safety" element={<TrustSafetyPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
