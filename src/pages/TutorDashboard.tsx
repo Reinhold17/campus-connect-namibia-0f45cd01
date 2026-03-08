@@ -91,7 +91,7 @@ export default function TutorDashboard() {
 
   const totalStudents = Object.values(bookingCounts).reduce((a, b) => a + b, 0);
 
-  // Calculate earnings: 60% of confirmed bookings' session prices
+  // Calculate earnings: 75% of confirmed bookings' session prices
   const { data: confirmedEarnings = 0 } = useQuery({
     queryKey: ['tutor-earnings', user?.id],
     queryFn: async () => {
