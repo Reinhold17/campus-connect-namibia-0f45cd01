@@ -266,7 +266,8 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         date,
         time,
         max_students: type === 'one-on-one' ? 1 : parseInt(maxStudents),
-      });
+        whatsapp_group_url: whatsappUrl || null,
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
