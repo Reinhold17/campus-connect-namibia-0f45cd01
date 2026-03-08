@@ -17,6 +17,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import StudentStudyPlanner from "./pages/StudentStudyPlanner";
+import TutorEnrolledStudents from "./pages/TutorEnrolledStudents";
 import TutorLessonPlanner from "./pages/TutorLessonPlanner";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/student/*" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />
             <Route path="/tutor" element={<ProtectedRoute allowedRoles={['tutor']}><TutorDashboard /></ProtectedRoute>} />
             <Route path="/tutor/lesson-planner" element={<ProtectedRoute allowedRoles={['tutor']}><TutorLessonPlanner /></ProtectedRoute>} />
+            <Route path="/tutor/students" element={<ProtectedRoute allowedRoles={['tutor']}><TutorEnrolledStudents /></ProtectedRoute>} />
             <Route path="/tutor/*" element={<ProtectedRoute allowedRoles={['tutor']}><TutorDashboard /></ProtectedRoute>} />
             <Route path="/tutors/:id" element={<TutorProfilePage />} />
             <Route path="/payment/:sessionId" element={<ProtectedRoute allowedRoles={['student']}><PaymentPage /></ProtectedRoute>} />

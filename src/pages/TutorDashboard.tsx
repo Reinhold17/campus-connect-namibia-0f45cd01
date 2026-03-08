@@ -91,11 +91,34 @@ export default function TutorDashboard() {
 
   const totalStudents = Object.values(bookingCounts).reduce((a, b) => a + b, 0);
 
+  // Calculate earnings: 60% of confirmed bookings' session prices
+  const { data: confirmedEarnings = 0 } = useQuery({
+    queryKey: ['tutor-earnings', user?.id],
+    queryFn: async () => {
+      if (sessions.length === 0) return 0;
+      const { data: confirmedBookings, error } = await supabase
+        .from('bookings')
+        .select('session_id')
+        .in('session_id', sessions.map(s => s.id))
+        .eq('payment_status', 'confirmed');
+      if (error) throw error;
+      if (!confirmedBookings) return 0;
+
+      const sessionPriceMap = new Map(sessions.map(s => [s.id, s.price]));
+      const total = confirmedBookings.reduce((sum, b) => {
+        const price = sessionPriceMap.get(b.session_id) || 0;
+        return sum + price;
+      }, 0);
+      return Math.round(total * 0.6); // 60/40 split - tutor gets 60%
+    },
+    enabled: sessions.length > 0,
+  });
+
   const statValues: Record<string, string | number> = {
     sessions: sessions.filter(s => s.status === 'active').length,
     students: totalStudents,
     rating: profile?.rating || 0,
-    earnings: 'N$0',
+    earnings: `N$${confirmedEarnings}`,
   };
 
   return (
