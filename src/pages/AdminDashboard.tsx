@@ -76,9 +76,16 @@ export default function AdminDashboard() {
         .update({ status: approve ? 'approved' : 'rejected' })
         .eq('user_id', userId);
       if (error) throw error;
+
+      // Send notification to tutor
+      await sendNotification({
+        type: approve ? 'tutor_approved' : 'tutor_rejected',
+        recipientUserId: userId,
+        data: { reason: approve ? undefined : 'Application did not meet requirements' },
+      });
     },
     onSuccess: (_, { approve }) => {
-      toast.success(approve ? 'Tutor approved!' : 'Tutor rejected.');
+      toast.success(approve ? 'Tutor approved & notified!' : 'Tutor rejected & notified.');
       queryClient.invalidateQueries({ queryKey: ['admin-pending-tutors'] });
     },
     onError: (err: any) => toast.error(err.message),
