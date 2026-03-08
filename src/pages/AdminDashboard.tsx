@@ -916,7 +916,10 @@ function PaymentCard({ payment, onConfirm }: { payment: any; onConfirm: any }) {
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Payment Proof</DialogTitle></DialogHeader>
-          {proofUrl && <img src={proofUrl} alt="Payment proof" className="w-full rounded-lg" />}
+          {proofUrl && (isPdf 
+            ? <iframe src={proofUrl} className="w-full h-[500px] rounded-lg" title="Payment proof PDF" />
+            : <img src={proofUrl} alt="Payment proof" className="w-full rounded-lg" />
+          )}
         </DialogContent>
       </Dialog>
     </>
