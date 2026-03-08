@@ -162,7 +162,8 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
           </button>
           <h1 className="font-display text-lg font-bold lg:text-xl">{title}</h1>
           {profile && (
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-3">
+              <NotificationBell />
               <span className="hidden text-sm text-muted-foreground sm:inline">{profile.name}</span>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                 {profile.name.split(' ').map(n => n[0]).join('')}
