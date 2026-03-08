@@ -4,6 +4,7 @@ import { Footer } from '@/components/Footer';
 import { RatingStars } from '@/components/RatingStars';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
+import { sendNotification } from '@/lib/notifications';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, BookOpen, Calendar, Clock, Users, AlertTriangle, Loader2 } from 'lucide-react';
