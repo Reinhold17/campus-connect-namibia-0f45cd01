@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { supabase } from '@/integrations/supabase/client';
+import { sendNotification } from '@/lib/notifications';
 import { ShieldCheck, CreditCard, Calendar, Users, BarChart3, UserCheck, DollarSign, BookOpen, GraduationCap, Eye, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
