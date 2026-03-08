@@ -167,48 +167,69 @@ export type Database = {
       }
       profiles: {
         Row: {
+          availability: Json | null
           bio: string | null
+          campus: string | null
+          city: string | null
           created_at: string
           email: string
+          government_id_url: string | null
           id: string
           name: string
+          neighbourhood: string | null
           phone_number: string | null
           rating: number | null
           review_count: number | null
           status: string
+          student_id_url: string | null
           subjects: string[] | null
+          teaching_style: string | null
           university: string | null
           updated_at: string
           user_id: string
           year_of_study: string | null
         }
         Insert: {
+          availability?: Json | null
           bio?: string | null
+          campus?: string | null
+          city?: string | null
           created_at?: string
           email: string
+          government_id_url?: string | null
           id?: string
           name: string
+          neighbourhood?: string | null
           phone_number?: string | null
           rating?: number | null
           review_count?: number | null
           status?: string
+          student_id_url?: string | null
           subjects?: string[] | null
+          teaching_style?: string | null
           university?: string | null
           updated_at?: string
           user_id: string
           year_of_study?: string | null
         }
         Update: {
+          availability?: Json | null
           bio?: string | null
+          campus?: string | null
+          city?: string | null
           created_at?: string
           email?: string
+          government_id_url?: string | null
           id?: string
           name?: string
+          neighbourhood?: string | null
           phone_number?: string | null
           rating?: number | null
           review_count?: number | null
           status?: string
+          student_id_url?: string | null
           subjects?: string[] | null
+          teaching_style?: string | null
           university?: string | null
           updated_at?: string
           user_id?: string
@@ -279,6 +300,38 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      tutor_module_grades: {
+        Row: {
+          created_at: string
+          grade: string
+          id: string
+          module_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          grade: string
+          id?: string
+          module_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          grade?: string
+          id?: string
+          module_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tutor_module_grades_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
           },
         ]
       }
