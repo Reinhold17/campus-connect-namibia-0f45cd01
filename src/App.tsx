@@ -17,6 +17,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import StudentStudyPlanner from "./pages/StudentStudyPlanner";
+import TutorEnrolledStudents from "./pages/TutorEnrolledStudents";
 import TutorLessonPlanner from "./pages/TutorLessonPlanner";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
