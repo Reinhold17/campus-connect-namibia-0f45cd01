@@ -17,6 +17,9 @@ import TutorDashboard from "./pages/TutorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import StudentStudyPlanner from "./pages/StudentStudyPlanner";
 import TutorLessonPlanner from "./pages/TutorLessonPlanner";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TrustSafetyPage from "./pages/TrustSafetyPage";
 
 const queryClient = new QueryClient();
 
