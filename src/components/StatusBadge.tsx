@@ -21,8 +21,8 @@ const statusLabels: Record<string, string> = {
 
 export function StatusBadge({ status }: { status: StatusType }) {
   return (
-    <Badge variant="outline" className={`${statusStyles[status]} text-xs font-medium capitalize`}>
-      {status}
+    <Badge variant="outline" className={`${statusStyles[status] || statusStyles.pending} text-xs font-medium capitalize`}>
+      {statusLabels[status] || status}
     </Badge>
   );
 }
