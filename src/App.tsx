@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import BrowseTutorsPage from "./pages/BrowseTutorsPage";
 import TutorProfilePage from "./pages/TutorProfilePage";
+import PaymentPage from "./pages/PaymentPage";
 import BecomeTutorPage from "./pages/BecomeTutorPage";
 import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
