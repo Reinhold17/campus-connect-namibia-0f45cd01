@@ -64,42 +64,6 @@ export default function TutorProfilePage() {
     enabled: sessions.length > 0,
   });
 
-  const bookMutation = useMutation({
-    mutationFn: async (sessionId: string) => {
-      const { error } = await supabase.from('bookings').insert({
-        session_id: sessionId,
-        student_id: user!.id,
-        status: 'pending',
-        payment_status: 'pending',
-      });
-      if (error) throw error;
-
-      // Find session details for notification
-      const session = sessions.find(s => s.id === sessionId);
-      if (session) {
-        // Notify student
-        await sendNotification({
-          type: 'booking_confirmed',
-          recipientUserId: user!.id,
-          data: {
-            subject: session.subject,
-            tutorName: tutor?.name || 'Tutor',
-            date: session.date,
-            time: session.time,
-          },
-        });
-      }
-    },
-    onSuccess: () => {
-      toast.success('Session booked! Check your email for confirmation.');
-      queryClient.invalidateQueries({ queryKey: ['session-booking-counts'] });
-      navigate('/student');
-    },
-    onError: (err: any) => {
-      toast.error(err.message || 'Booking failed');
-    },
-  });
-
   const handleBook = (sessionId: string) => {
     if (!isAuthenticated) {
       toast.info('Please sign up or log in to book a session');
@@ -110,7 +74,7 @@ export default function TutorProfilePage() {
       toast.error('Only students can book sessions');
       return;
     }
-    bookMutation.mutate(sessionId);
+    navigate(`/payment/${sessionId}`);
   };
 
   if (tutorLoading) {
