@@ -36,7 +36,7 @@ const Index = () => {
   const topTutors = mockTutors.filter(t => (t.rating || 0) >= 4.5).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
       {/* Hero */}
