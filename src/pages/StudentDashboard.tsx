@@ -3,7 +3,7 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Bell, User, Calendar, Clock, Upload, CheckCircle, MessageCircle, Edit } from 'lucide-react';
+import { Search, Bell, User, Calendar, Clock, Upload, CheckCircle, MessageCircle, Edit, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
