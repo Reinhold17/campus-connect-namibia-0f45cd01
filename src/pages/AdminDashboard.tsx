@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { supabase } from '@/integrations/supabase/client';
+import { sendNotification } from '@/lib/notifications';
 import { ShieldCheck, CreditCard, Calendar, Users, BarChart3, UserCheck, DollarSign, BookOpen, GraduationCap, Eye, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -75,16 +76,23 @@ export default function AdminDashboard() {
         .update({ status: approve ? 'approved' : 'rejected' })
         .eq('user_id', userId);
       if (error) throw error;
+
+      // Send notification to tutor
+      await sendNotification({
+        type: approve ? 'tutor_approved' : 'tutor_rejected',
+        recipientUserId: userId,
+        data: { reason: approve ? undefined : 'Application did not meet requirements' },
+      });
     },
     onSuccess: (_, { approve }) => {
-      toast.success(approve ? 'Tutor approved!' : 'Tutor rejected.');
+      toast.success(approve ? 'Tutor approved & notified!' : 'Tutor rejected & notified.');
       queryClient.invalidateQueries({ queryKey: ['admin-pending-tutors'] });
     },
     onError: (err: any) => toast.error(err.message),
   });
 
   const confirmPayment = useMutation({
-    mutationFn: async ({ bookingId, confirm }: { bookingId: string; confirm: boolean }) => {
+    mutationFn: async ({ bookingId, confirm, studentId, subject }: { bookingId: string; confirm: boolean; studentId: string; subject: string }) => {
       const { error } = await supabase
         .from('bookings')
         .update({
@@ -93,9 +101,16 @@ export default function AdminDashboard() {
         })
         .eq('id', bookingId);
       if (error) throw error;
+
+      // Notify student about payment status
+      await sendNotification({
+        type: 'payment_update',
+        recipientUserId: studentId,
+        data: { paymentStatus: confirm ? 'confirmed' : 'rejected', subject },
+      });
     },
     onSuccess: (_, { confirm }) => {
-      toast.success(confirm ? 'Payment confirmed!' : 'Payment rejected.');
+      toast.success(confirm ? 'Payment confirmed & student notified!' : 'Payment rejected & student notified.');
       queryClient.invalidateQueries({ queryKey: ['admin-pending-payments'] });
     },
     onError: (err: any) => toast.error(err.message),
@@ -190,10 +205,10 @@ function PaymentCard({ payment, onConfirm }: { payment: any; onConfirm: any }) {
           <p className="text-xs text-muted-foreground">{payment.student?.email}</p>
         </div>
         <div className="flex gap-2">
-          <Button size="sm" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: true })}>
+          <Button size="sm" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: true, studentId: payment.student_id, subject: payment.sessions?.subject })}>
             Confirm
           </Button>
-          <Button size="sm" variant="outline" className="text-destructive" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: false })}>
+          <Button size="sm" variant="outline" className="text-destructive" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: false, studentId: payment.student_id, subject: payment.sessions?.subject })}>
             Reject
           </Button>
           <Button size="sm" variant="outline" onClick={handleViewProof}>

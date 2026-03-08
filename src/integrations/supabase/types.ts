@@ -123,6 +123,48 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          channel: string
+          created_at: string
+          email_sent: boolean
+          id: string
+          message: string
+          metadata: Json | null
+          read: boolean
+          status: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          email_sent?: boolean
+          id?: string
+          message: string
+          metadata?: Json | null
+          read?: boolean
+          status?: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          email_sent?: boolean
+          id?: string
+          message?: string
+          metadata?: Json | null
+          read?: boolean
+          status?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           bio: string | null
