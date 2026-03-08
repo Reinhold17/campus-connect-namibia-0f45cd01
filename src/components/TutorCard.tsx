@@ -20,7 +20,12 @@ export function TutorCard({ tutor }: TutorCardProps) {
           {initials}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="font-display text-lg font-bold text-card-foreground">{tutor.name}</h3>
+          <h3 className="font-display text-lg font-bold text-card-foreground">
+            {tutor.name}
+            {isTutorVerified({ status: tutor.status, student_id_url: (tutor as any).student_id_url, government_id_url: (tutor as any).government_id_url }) && (
+              <span className="ml-1.5 inline-block align-middle"><VerifiedBadge size="sm" /></span>
+            )}
+          </h3>
           <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <GraduationCap className="h-3.5 w-3.5" />
             <span className="truncate">{tutor.university}</span>
