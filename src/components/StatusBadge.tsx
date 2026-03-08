@@ -1,20 +1,28 @@
 import { Badge } from '@/components/ui/badge';
 
-type StatusType = 'pending' | 'confirmed' | 'completed' | 'approved' | 'suspended' | 'reserved';
+type StatusType = 'pending' | 'pending_payment' | 'pending_verification' | 'confirmed' | 'completed' | 'approved' | 'suspended' | 'reserved' | 'cancelled';
 
 const statusStyles: Record<StatusType, string> = {
   pending: 'bg-warning/15 text-warning border-warning/30',
+  pending_payment: 'bg-warning/15 text-warning border-warning/30',
+  pending_verification: 'bg-accent/15 text-accent border-accent/30',
   confirmed: 'bg-success/15 text-success border-success/30',
   completed: 'bg-primary/15 text-primary border-primary/30',
   approved: 'bg-success/15 text-success border-success/30',
   suspended: 'bg-destructive/15 text-destructive border-destructive/30',
   reserved: 'bg-accent/15 text-accent border-accent/30',
+  cancelled: 'bg-destructive/15 text-destructive border-destructive/30',
+};
+
+const statusLabels: Record<string, string> = {
+  pending_payment: 'Pending Payment',
+  pending_verification: 'Pending Verification',
 };
 
 export function StatusBadge({ status }: { status: StatusType }) {
   return (
-    <Badge variant="outline" className={`${statusStyles[status]} text-xs font-medium capitalize`}>
-      {status}
+    <Badge variant="outline" className={`${statusStyles[status] || statusStyles.pending} text-xs font-medium capitalize`}>
+      {statusLabels[status] || status}
     </Badge>
   );
 }

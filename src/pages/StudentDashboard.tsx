@@ -207,7 +207,7 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
             </a>
           )}
 
-          {booking.payment_status === 'pending' && (
+          {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && (
             <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline" className="w-full gap-1">
@@ -221,8 +221,8 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
                     Upload a screenshot or photo of your bank deposit slip for <strong>N${session?.price}</strong>.
                   </p>
                   <div>
-                    <Label htmlFor="proof">Payment Proof Image</Label>
-                    <Input id="proof" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+                    <Label htmlFor="proof">Payment Proof (Image or PDF)</Label>
+                    <Input id="proof" type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} />
                   </div>
                   <Button className="w-full" disabled={!file || uploadMutation.isPending} onClick={() => uploadMutation.mutate()}>
                     {uploadMutation.isPending ? 'Uploading...' : 'Submit Payment Proof'}
@@ -232,9 +232,9 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
             </Dialog>
           )}
 
-          {booking.payment_status === 'uploaded' && (
+          {(booking.payment_status === 'uploaded' || booking.payment_status === 'pending_verification') && (
             <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
-              <CheckCircle className="h-3 w-3 text-warning" /> Awaiting confirmation
+              <CheckCircle className="h-3 w-3 text-warning" /> Awaiting admin verification
             </p>
           )}
         </div>
@@ -246,13 +246,19 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
 function PaymentStatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     pending: 'bg-muted text-muted-foreground',
+    pending_payment: 'bg-warning/10 text-warning',
+    pending_verification: 'bg-accent/10 text-accent',
     uploaded: 'bg-warning/10 text-warning',
     confirmed: 'bg-success/10 text-success',
     rejected: 'bg-destructive/10 text-destructive',
   };
+  const labels: Record<string, string> = {
+    pending_payment: 'Pending Payment',
+    pending_verification: 'Pending Verification',
+  };
   return (
     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles[status] || styles.pending}`}>
-      Payment: {status}
+      Payment: {labels[status] || status}
     </span>
   );
 }
