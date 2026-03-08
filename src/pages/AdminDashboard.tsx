@@ -357,7 +357,7 @@ function PaymentsTab() {
       const { data, error } = await supabase
         .from('bookings')
         .select('*, sessions(subject, price, tutor_id), student:profiles!bookings_student_id_fkey1(name, email)')
-        .eq('payment_status', 'uploaded')
+        .in('payment_status', ['uploaded', 'pending_verification'])
         .order('updated_at', { ascending: false });
       if (error) throw error;
       return data;
