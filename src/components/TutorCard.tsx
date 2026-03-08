@@ -4,9 +4,10 @@ import { RatingStars } from '@/components/RatingStars';
 import { Badge } from '@/components/ui/badge';
 import { GraduationCap, BookOpen, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { VerifiedBadge, isTutorVerified } from '@/components/VerifiedBadge';
 
 interface TutorCardProps {
-  tutor: User & { user_id?: string };
+  tutor: User & { user_id?: string; student_id_url?: string | null; government_id_url?: string | null };
 }
 
 export function TutorCard({ tutor }: TutorCardProps) {
