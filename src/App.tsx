@@ -15,6 +15,8 @@ import BecomeTutorPage from "./pages/BecomeTutorPage";
 import StudentDashboard from "./pages/StudentDashboard";
 import TutorDashboard from "./pages/TutorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import StudentStudyPlanner from "./pages/StudentStudyPlanner";
+import TutorLessonPlanner from "./pages/TutorLessonPlanner";
 
 const queryClient = new QueryClient();
 
