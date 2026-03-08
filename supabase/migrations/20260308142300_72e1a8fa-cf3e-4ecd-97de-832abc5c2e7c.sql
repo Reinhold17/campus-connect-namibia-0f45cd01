@@ -1,0 +1,5 @@
+ALTER TABLE public.bookings DROP CONSTRAINT IF EXISTS bookings_payment_status_check;
+ALTER TABLE public.bookings ADD CONSTRAINT bookings_payment_status_check CHECK (payment_status IN ('pending', 'pending_payment', 'pending_verification', 'confirmed', 'cancelled'));
+
+ALTER TABLE public.bookings DROP CONSTRAINT IF EXISTS bookings_status_check;
+ALTER TABLE public.bookings ADD CONSTRAINT bookings_status_check CHECK (status IN ('pending', 'pending_payment', 'confirmed', 'completed', 'cancelled'));
