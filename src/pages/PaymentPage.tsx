@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import {
   CreditCard, Building2, Upload, CheckCircle, ArrowLeft, Loader2,
-  Calendar, Clock, User, Copy, Shield
+  Calendar, Clock, User, Copy, Shield, Lightbulb
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useQuery, useMutation } from '@tanstack/react-query';
