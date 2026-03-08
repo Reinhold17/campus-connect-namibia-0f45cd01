@@ -235,6 +235,36 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Become a Tutor CTA */}
+      <section className="py-20">
+        <div className="container mx-auto px-5 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="rounded-2xl border bg-card p-8 md:p-12 text-center shadow-card"
+          >
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent/15">
+              <GraduationCap className="h-7 w-7 text-accent" />
+            </div>
+            <h2 className="font-display text-3xl font-bold text-card-foreground md:text-4xl">
+              Got the Grades? Become a Tutor
+            </h2>
+            <p className="mx-auto mt-4 max-w-lg text-muted-foreground">
+              Earn money by helping fellow students succeed. Set your own rate, choose your schedule, and keep 75% of every session.
+            </p>
+            <Button
+              size="lg"
+              className="mt-8 gap-2"
+              onClick={() => navigate('/become-tutor')}
+            >
+              Apply to Tutor <ArrowRight className="h-4 w-4" />
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
