@@ -253,6 +253,7 @@ export type Database = {
           tutor_id: string
           type: string
           updated_at: string
+          whatsapp_group_url: string | null
         }
         Insert: {
           created_at?: string
@@ -269,6 +270,7 @@ export type Database = {
           tutor_id: string
           type?: string
           updated_at?: string
+          whatsapp_group_url?: string | null
         }
         Update: {
           created_at?: string
@@ -285,6 +287,7 @@ export type Database = {
           tutor_id?: string
           type?: string
           updated_at?: string
+          whatsapp_group_url?: string | null
         }
         Relationships: [
           {

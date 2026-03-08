@@ -253,6 +253,7 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [maxStudents, setMaxStudents] = useState('10');
+  const [whatsappUrl, setWhatsappUrl] = useState('');
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -265,7 +266,8 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         date,
         time,
         max_students: type === 'one-on-one' ? 1 : parseInt(maxStudents),
-      });
+        whatsapp_group_url: whatsappUrl || null,
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -308,6 +310,11 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
       <div>
         <Label>Location</Label>
         <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. UNAM Library Room 2" required />
+      </div>
+      <div>
+        <Label>WhatsApp Group Link</Label>
+        <Input value={whatsappUrl} onChange={e => setWhatsappUrl(e.target.value)} placeholder="https://chat.whatsapp.com/..." />
+        <p className="mt-1 text-xs text-muted-foreground">Students will see this link after their payment is confirmed</p>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>

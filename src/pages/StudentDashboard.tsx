@@ -153,7 +153,7 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
   const session = booking.sessions;
   const tutorName = session?.tutor?.name || 'Unknown';
   const moduleName = session?.module?.name || session?.subject || 'Session';
-  const whatsappUrl = session?.module?.whatsapp_group_url;
+  const whatsappUrl = (session as any)?.whatsapp_group_url || session?.module?.whatsapp_group_url;
   const paymentConfirmed = booking.payment_status === 'confirmed';
 
   const uploadMutation = useMutation({
