@@ -311,6 +311,11 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         <Label>Location</Label>
         <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. UNAM Library Room 2" required />
       </div>
+      <div>
+        <Label>WhatsApp Group Link</Label>
+        <Input value={whatsappUrl} onChange={e => setWhatsappUrl(e.target.value)} placeholder="https://chat.whatsapp.com/..." />
+        <p className="mt-1 text-xs text-muted-foreground">Students will see this link after their payment is confirmed</p>
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label>Date</Label>
