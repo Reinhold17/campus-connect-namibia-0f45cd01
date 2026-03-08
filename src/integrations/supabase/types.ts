@@ -174,6 +174,7 @@ export type Database = {
           created_at: string
           email: string
           government_id_url: string | null
+          hourly_rate: number | null
           id: string
           name: string
           neighbourhood: string | null
@@ -197,6 +198,7 @@ export type Database = {
           created_at?: string
           email: string
           government_id_url?: string | null
+          hourly_rate?: number | null
           id?: string
           name: string
           neighbourhood?: string | null
@@ -220,6 +222,7 @@ export type Database = {
           created_at?: string
           email?: string
           government_id_url?: string | null
+          hourly_rate?: number | null
           id?: string
           name?: string
           neighbourhood?: string | null
@@ -305,6 +308,42 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      tutor_agreements: {
+        Row: {
+          accepted_at: string
+          contract_understood: boolean
+          created_at: string
+          id: string
+          info_accurate: boolean
+          ip_address: string | null
+          terms_accepted: boolean
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          contract_understood?: boolean
+          created_at?: string
+          id?: string
+          info_accurate?: boolean
+          ip_address?: string | null
+          terms_accepted?: boolean
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string
+          contract_understood?: boolean
+          created_at?: string
+          id?: string
+          info_accurate?: boolean
+          ip_address?: string | null
+          terms_accepted?: boolean
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       tutor_module_grades: {
         Row: {

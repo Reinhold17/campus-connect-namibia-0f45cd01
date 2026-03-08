@@ -91,7 +91,7 @@ export default function TutorDashboard() {
 
   const totalStudents = Object.values(bookingCounts).reduce((a, b) => a + b, 0);
 
-  // Calculate earnings: 60% of confirmed bookings' session prices
+  // Calculate earnings: 75% of confirmed bookings' session prices
   const { data: confirmedEarnings = 0 } = useQuery({
     queryKey: ['tutor-earnings', user?.id],
     queryFn: async () => {
@@ -109,7 +109,7 @@ export default function TutorDashboard() {
         const price = sessionPriceMap.get(b.session_id) || 0;
         return sum + price;
       }, 0);
-      return Math.round(total * 0.6); // 60/40 split - tutor gets 60%
+      return Math.round(total * 0.75); // 75/25 split - tutor gets 75%
     },
     enabled: sessions.length > 0,
   });
