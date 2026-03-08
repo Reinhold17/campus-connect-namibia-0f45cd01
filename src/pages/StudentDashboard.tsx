@@ -207,7 +207,7 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
             </a>
           )}
 
-          {booking.payment_status === 'pending' && (
+          {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && (
             <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline" className="w-full gap-1">
@@ -221,8 +221,8 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
                     Upload a screenshot or photo of your bank deposit slip for <strong>N${session?.price}</strong>.
                   </p>
                   <div>
-                    <Label htmlFor="proof">Payment Proof Image</Label>
-                    <Input id="proof" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+                    <Label htmlFor="proof">Payment Proof (Image or PDF)</Label>
+                    <Input id="proof" type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] || null)} />
                   </div>
                   <Button className="w-full" disabled={!file || uploadMutation.isPending} onClick={() => uploadMutation.mutate()}>
                     {uploadMutation.isPending ? 'Uploading...' : 'Submit Payment Proof'}
