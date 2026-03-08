@@ -846,14 +846,18 @@ function TutorApplicationCard({
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>{docTitle}</DialogTitle></DialogHeader>
           {docUrl && (
-            docUrl.includes('.pdf') ? (
-              <div className="flex flex-col items-center gap-3">
-                <p className="text-sm text-muted-foreground">PDF document</p>
-                <Button asChild variant="outline">
-                  <a href={docUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-1 h-4 w-4" /> Open PDF</a>
+            <>
+              {docUrl.includes('.pdf') ? (
+                <iframe src={docUrl} className="w-full h-[500px] rounded-lg" title={docTitle} />
+              ) : (
+                <img src={docUrl} alt={docTitle} className="w-full rounded-lg" />
+              )}
+              <a href={docUrl} download target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="w-full mt-2 gap-2">
+                  <ExternalLink className="h-4 w-4" /> Download {docTitle}
                 </Button>
-              </div>
-            ) : <img src={docUrl} alt={docTitle} className="w-full rounded-lg" />
+              </a>
+            </>
           )}
         </DialogContent>
       </Dialog>
