@@ -8,6 +8,7 @@ import { sendNotification } from '@/lib/notifications';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, BookOpen, Calendar, Clock, Users, AlertTriangle, Loader2 } from 'lucide-react';
+import { VerifiedBadge, isTutorVerified } from '@/components/VerifiedBadge';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
