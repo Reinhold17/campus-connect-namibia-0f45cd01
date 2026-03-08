@@ -109,7 +109,7 @@ export default function TutorDashboard() {
         const price = sessionPriceMap.get(b.session_id) || 0;
         return sum + price;
       }, 0);
-      return Math.round(total * 0.6); // 60/40 split - tutor gets 60%
+      return Math.round(total * 0.75); // 75/25 split - tutor gets 75%
     },
     enabled: sessions.length > 0,
   });
