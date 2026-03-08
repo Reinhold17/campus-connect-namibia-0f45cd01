@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
-import { RatingStars } from '@/components/RatingStars';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
-import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles } from 'lucide-react';
+import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles, TrendingUp, DollarSign, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,6 +20,37 @@ const sidebarItems = [
   { label: 'Ratings', icon: Star, to: '/tutor/ratings' },
   { label: 'Notifications', icon: Bell, to: '/tutor/notifications' },
   { label: 'Profile', icon: User, to: '/tutor/profile' },
+];
+
+const statCards = [
+  {
+    key: 'sessions',
+    label: 'Active Sessions',
+    icon: BookOpen,
+    gradient: 'from-[hsl(217,72%,28%)] to-[hsl(217,60%,42%)]',
+    iconBg: 'bg-[hsl(217,72%,28%/0.2)]',
+  },
+  {
+    key: 'students',
+    label: 'Total Students',
+    icon: Users,
+    gradient: 'from-[hsl(142,71%,35%)] to-[hsl(142,60%,45%)]',
+    iconBg: 'bg-[hsl(142,71%,35%/0.2)]',
+  },
+  {
+    key: 'rating',
+    label: 'Average Rating',
+    icon: Star,
+    gradient: 'from-[hsl(39,90%,55%)] to-[hsl(45,95%,60%)]',
+    iconBg: 'bg-[hsl(39,90%,55%/0.2)]',
+  },
+  {
+    key: 'earnings',
+    label: 'Total Earnings',
+    icon: DollarSign,
+    gradient: 'from-[hsl(270,60%,50%)] to-[hsl(280,70%,60%)]',
+    iconBg: 'bg-[hsl(270,60%,50%/0.2)]',
+  },
 ];
 
 export default function TutorDashboard() {
@@ -61,34 +91,63 @@ export default function TutorDashboard() {
 
   const totalStudents = Object.values(bookingCounts).reduce((a, b) => a + b, 0);
 
+  const statValues: Record<string, string | number> = {
+    sessions: sessions.filter(s => s.status === 'active').length,
+    students: totalStudents,
+    rating: profile?.rating || 0,
+    earnings: 'N$0',
+  };
+
   return (
     <DashboardLayout title="Tutor Dashboard" items={sidebarItems}>
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <div className="rounded-xl border bg-card p-5 shadow-card">
-            <p className="text-sm text-muted-foreground">Active Sessions</p>
-            <p className="mt-1 font-display text-2xl font-bold">{sessions.filter(s => s.status === 'active').length}</p>
-          </div>
-          <div className="rounded-xl border bg-card p-5 shadow-card">
-            <p className="text-sm text-muted-foreground">Total Students</p>
-            <p className="mt-1 font-display text-2xl font-bold">{totalStudents}</p>
-          </div>
-          <div className="rounded-xl border bg-card p-5 shadow-card">
-            <p className="text-sm text-muted-foreground">Average Rating</p>
-            <p className="mt-1 font-display text-2xl font-bold">{profile?.rating || 0}</p>
-          </div>
-          <div className="rounded-xl border bg-card p-5 shadow-card">
-            <p className="text-sm text-muted-foreground">Total Earnings</p>
-            <p className="mt-1 font-display text-2xl font-bold">N$0</p>
+      <div className="space-y-8">
+        {/* Welcome Banner */}
+        <div className="relative overflow-hidden rounded-2xl bg-hero-gradient p-6 text-primary-foreground shadow-elevated sm:p-8">
+          <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-[hsl(39,90%,55%/0.1)] blur-2xl" />
+          <div className="absolute -bottom-4 -left-4 h-32 w-32 rounded-full bg-[hsl(39,90%,55%/0.08)] blur-xl" />
+          <div className="relative">
+            <p className="text-sm font-medium text-primary-foreground/70">Welcome back,</p>
+            <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl">{profile?.name || 'Tutor'} 👋</h2>
+            <p className="mt-2 max-w-lg text-sm text-primary-foreground/60">
+              Manage your sessions, track your students, and grow your tutoring career.
+            </p>
           </div>
         </div>
 
+        {/* Stat Cards */}
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {statCards.map((card, i) => (
+            <div
+              key={card.key}
+              className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-5 shadow-card transition-all duration-300 hover:shadow-elevated hover:-translate-y-1 animate-fade-in"
+              style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'backwards' }}
+            >
+              <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className={`h-full w-full bg-gradient-to-br ${card.gradient} opacity-[0.04]`} />
+              </div>
+              <div className="relative">
+                <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${card.gradient} p-2.5 text-primary-foreground shadow-md`}>
+                  <card.icon className="h-5 w-5" />
+                </div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{card.label}</p>
+                <p className="mt-1 font-display text-3xl font-bold tracking-tight">{statValues[card.key]}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Sessions List */}
         <div>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-lg font-bold">My Sessions</h2>
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="font-display text-xl font-bold">My Sessions</h2>
+              <p className="text-sm text-muted-foreground">Manage and track your tutoring sessions</p>
+            </div>
             <Dialog open={createOpen} onOpenChange={setCreateOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="gap-1"><CalendarPlus className="h-4 w-4" /> Create Session</Button>
+                <Button size="sm" className="gap-2 bg-gradient-to-r from-primary to-[hsl(217,60%,38%)] shadow-md hover:shadow-lg transition-all duration-200">
+                  <CalendarPlus className="h-4 w-4" /> Create Session
+                </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -105,22 +164,53 @@ export default function TutorDashboard() {
               </DialogContent>
             </Dialog>
           </div>
+
           {isLoading ? (
-            <p className="text-muted-foreground">Loading sessions...</p>
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading sessions...</span>
+            </div>
           ) : sessions.length === 0 ? (
-            <p className="text-muted-foreground">No sessions created yet. Click "Create Session" to get started.</p>
+            <div className="rounded-2xl border-2 border-dashed border-border bg-muted/30 p-12 text-center">
+              <div className="mx-auto mb-4 inline-flex rounded-2xl bg-gradient-to-br from-primary to-[hsl(217,60%,38%)] p-4 text-primary-foreground shadow-lg">
+                <CalendarPlus className="h-8 w-8" />
+              </div>
+              <h3 className="font-display text-lg font-bold">No sessions yet</h3>
+              <p className="mt-2 text-sm text-muted-foreground">Create your first session to start tutoring students.</p>
+              <Button className="mt-4 gap-2" onClick={() => setCreateOpen(true)}>
+                <CalendarPlus className="h-4 w-4" /> Create Session
+              </Button>
+            </div>
           ) : (
             <div className="space-y-3">
-              {sessions.map(session => (
-                <div key={session.id} className="flex flex-col gap-2 rounded-xl border bg-card p-4 shadow-card sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0">
-                    <h3 className="font-display font-bold truncate">{session.subject}</h3>
-                    <p className="text-sm text-muted-foreground">{session.date} at {session.time}</p>
-                    <p className="text-xs text-muted-foreground truncate">{session.location}</p>
+              {sessions.map((session, i) => (
+                <div
+                  key={session.id}
+                  className="group flex flex-col gap-3 rounded-2xl border bg-card p-5 shadow-card transition-all duration-300 hover:shadow-elevated hover:border-primary/20 sm:flex-row sm:items-center sm:justify-between animate-fade-in"
+                  style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'backwards' }}
+                >
+                  <div className="flex items-start gap-4 min-w-0">
+                    <div className="hidden sm:flex shrink-0 h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary">
+                      <BookOpen className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-display font-bold truncate text-base">{session.subject}</h3>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3.5 w-3.5" />
+                          {session.date}
+                        </span>
+                        <span>at {session.time}</span>
+                      </div>
+                      <p className="mt-0.5 text-xs text-muted-foreground truncate">{session.location}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 sm:shrink-0">
                     <StatusBadge status={session.status === 'active' ? 'confirmed' : session.status as any} />
-                    <span className="text-sm text-muted-foreground">{bookingCounts[session.id] || 0}/{session.max_students}</span>
+                    <div className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-medium">
+                      <Users className="h-3 w-3 text-muted-foreground" />
+                      <span>{bookingCounts[session.id] || 0}/{session.max_students}</span>
+                    </div>
                   </div>
                 </div>
               ))}
