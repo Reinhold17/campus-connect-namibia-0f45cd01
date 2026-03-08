@@ -1,20 +1,25 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { TutorCard } from '@/components/TutorCard';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { mockTutors } from '@/lib/mock-data';
-import { Search, UserCheck, CalendarCheck, BookOpen, ShieldCheck, Star, DollarSign, GraduationCap, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
-import heroImage from '@/assets/hero-image.jpg';
-import { useState } from 'react';
+import { Search, TrendingUp, ShieldCheck, Star, DollarSign, GraduationCap, ArrowRight, BookOpen, UserCheck, CalendarCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import tutor1 from '@/assets/tutor-1.jpg';
+import tutor2 from '@/assets/tutor-2.jpg';
+import tutor3 from '@/assets/tutor-3.jpg';
+import tutor4 from '@/assets/tutor-4.jpg';
+
+const subjects = ['Calculus', 'Accounting', 'Physics', 'Programming', 'Chemistry', 'Statistics', 'Economics', 'Engineering'];
+
+const trending = ['Mathematics', 'Accounting', 'Physics', 'Programming', 'Chemistry', 'Statistics', 'Law', 'Economics'];
 
 const steps = [
-  { icon: Search, title: 'Find Your Tutor', description: 'Search by subject, module, or university to discover the right tutor for you.' },
-  { icon: UserCheck, title: 'Pick Who Fits You', description: 'Browse tutor profiles, read reviews, and choose someone who matches your learning style.' },
-  { icon: CalendarCheck, title: 'Book a Session', description: 'Select from available sessions your tutor offers — at times and places that work for you.' },
-  { icon: BookOpen, title: 'Start Learning', description: 'Meet your tutor in person, get the help you need, and watch your grades improve.' },
+  { icon: Search, title: 'Search Your Subject', description: 'Type what you need help with and discover tutors who specialise in it.' },
+  { icon: UserCheck, title: 'Choose Your Tutor', description: 'Compare profiles, reviews, and rates — then pick the tutor that fits you.' },
+  { icon: CalendarCheck, title: 'Book a Session', description: 'Select from available sessions your tutor offers at times that work for you.' },
+  { icon: BookOpen, title: 'Start Learning', description: 'Meet your tutor, get the help you need, and watch your grades improve.' },
 ];
 
 const features = [
@@ -32,89 +37,140 @@ const fadeUp = {
   }),
 };
 
+const DiamondImage = ({ src, alt, className }: { src: string; alt: string; className?: string }) => (
+  <div className={`relative ${className}`}>
+    <div className="w-36 h-36 md:w-44 md:h-44 lg:w-52 lg:h-52 rotate-45 overflow-hidden rounded-2xl border-4 border-accent/30 shadow-elevated">
+      <img src={src} alt={alt} className="-rotate-45 scale-[1.42] object-cover w-full h-full" />
+    </div>
+  </div>
+);
+
 const Index = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const topTutors = mockTutors.filter(t => (t.rating || 0) >= 4.5).slice(0, 3);
+  const [currentSubject, setCurrentSubject] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSubject((prev) => (prev + 1) % subjects.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/browse?q=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate('/browse');
-    }
+    navigate(searchQuery.trim() ? `/browse?q=${encodeURIComponent(searchQuery.trim())}` : '/browse');
   };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
-      {/* Hero — Student-focused */}
-      <section className="relative overflow-hidden bg-hero-gradient py-20 lg:py-32">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] opacity-50" />
-        <div className="container relative mx-auto px-4">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-            >
-              <h1 className="font-display text-4xl font-extrabold leading-tight text-primary-foreground md:text-5xl lg:text-6xl">
-                Struggling with a Module?{' '}
-                <span className="text-gradient-gold">We'll Match You.</span>
-              </h1>
-              <p className="mt-5 max-w-lg text-lg text-primary-foreground/75">
-                Find a verified tutor who knows your exact curriculum. Choose your session, book in seconds, and start improving your grades.
-              </p>
+      {/* Hero — Wyzant Style */}
+      <section className="relative overflow-hidden bg-muted py-16 lg:py-24">
+        {/* Decorative accent blocks */}
+        <div className="absolute top-10 left-0 w-20 h-20 bg-accent/20 rotate-45 -translate-x-10 rounded-md hidden lg:block" />
+        <div className="absolute bottom-10 right-0 w-16 h-16 bg-primary/20 rotate-45 translate-x-8 rounded-md hidden lg:block" />
+        <div className="absolute top-1/2 left-4 w-10 h-10 bg-accent/15 rotate-45 rounded-sm hidden lg:block" />
+        <div className="absolute top-1/3 right-8 w-12 h-12 bg-primary/10 rotate-45 rounded-sm hidden lg:block" />
 
-              {/* Search Bar */}
-              <form onSubmit={handleSearch} className="mt-8 flex w-full max-w-lg gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+        <div className="container relative mx-auto px-4">
+          <div className="flex items-center justify-between">
+            {/* Left diamond images */}
+            <div className="hidden lg:flex flex-col gap-6 items-end flex-shrink-0">
+              <DiamondImage src={tutor1} alt="Campus Connect tutor" className="" />
+              <DiamondImage src={tutor2} alt="Campus Connect tutor" className="-mr-8" />
+            </div>
+
+            {/* Center content */}
+            <div className="flex-1 text-center px-4 lg:px-12 max-w-2xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <h1 className="font-display text-3xl font-extrabold leading-tight text-foreground sm:text-4xl md:text-5xl">
+                  Namibia's trusted network for{' '}
+                  <span className="relative inline-block">
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={currentSubject}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="inline-block bg-accent/20 px-3 py-1 rounded-md text-accent-foreground"
+                      >
+                        {subjects[currentSubject]}
+                      </motion.span>
+                    </AnimatePresence>
+                  </span>{' '}
+                  tutors
+                </h1>
+
+                {/* Search Bar */}
+                <form onSubmit={handleSearch} className="mt-10 flex w-full max-w-lg mx-auto gap-0">
                   <Input
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    placeholder="What do you need help with? e.g. Calculus, Physics..."
-                    className="h-12 pl-10 bg-background/95 text-foreground border-0 shadow-elevated placeholder:text-muted-foreground"
+                    placeholder="What would you like to learn?"
+                    className="h-14 rounded-r-none border-r-0 bg-card text-foreground text-base shadow-card placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
-                </div>
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="h-12 bg-gold-gradient font-semibold text-accent-foreground shadow-glow hover:opacity-90"
-                >
-                  Find Tutors
-                </Button>
-              </form>
-
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-primary-foreground/60">
-                <span>Popular:</span>
-                {['Mathematics', 'Accounting', 'Physics', 'Programming'].map(subject => (
-                  <button
-                    key={subject}
-                    onClick={() => navigate(`/browse?q=${encodeURIComponent(subject)}`)}
-                    className="rounded-full border border-primary-foreground/20 px-3 py-1 text-xs text-primary-foreground/70 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="h-14 rounded-l-none px-6 bg-accent text-accent-foreground hover:bg-accent/90 shadow-card"
                   >
-                    {subject}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
+                    <Search className="h-5 w-5" />
+                  </Button>
+                </form>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="hidden lg:block"
-            >
-              <img
-                src={heroImage}
-                alt="Students studying together at a Namibian university campus"
-                className="rounded-2xl shadow-2xl"
-              />
-            </motion.div>
+                {/* Trending */}
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+                  <span className="flex items-center gap-1 font-semibold text-foreground">
+                    <TrendingUp className="h-4 w-4 text-accent" /> Trending:
+                  </span>
+                  {trending.map(subject => (
+                    <button
+                      key={subject}
+                      onClick={() => navigate(`/browse?q=${encodeURIComponent(subject)}`)}
+                      className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-accent hover:text-foreground"
+                    >
+                      {subject}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right diamond images */}
+            <div className="hidden lg:flex flex-col gap-6 items-start flex-shrink-0">
+              <DiamondImage src={tutor3} alt="Campus Connect tutor" className="" />
+              <DiamondImage src={tutor4} alt="Campus Connect tutor" className="-ml-8" />
+            </div>
           </div>
+
+          {/* Stats Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-16 flex flex-wrap justify-center gap-8 md:gap-16"
+          >
+            {[
+              { highlight: '5-Star', label: 'Verified Reviews' },
+              { highlight: 'Expert Tutors', label: 'across 50+ subjects' },
+              { highlight: 'Good Fit', label: 'Guarantee' },
+            ].map((stat) => (
+              <div key={stat.highlight} className="text-center">
+                <div className="flex justify-center mb-1">
+                  <div className="w-3 h-3 rotate-45 bg-accent rounded-sm" />
+                </div>
+                <p className="font-display text-lg font-bold text-foreground">{stat.highlight}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -150,7 +206,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Why Choose Us */}
+      {/* Why Students Trust Us */}
       <section className="bg-muted/50 py-20">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
@@ -175,26 +231,6 @@ const Index = () => {
                 <p className="mt-2 text-sm text-muted-foreground">{feat.description}</p>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Tutors */}
-      <section className="py-20">
-        <div className="container mx-auto px-5 sm:px-6">
-          <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Top Rated Tutors</h2>
-            <p className="mt-3 text-muted-foreground">Highly reviewed tutors ready to help you succeed</p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {topTutors.map((tutor) => (
-              <TutorCard key={tutor.id} tutor={tutor} />
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Button size="lg" onClick={() => navigate('/browse')} className="gap-2">
-              Browse All Tutors <ArrowRight className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </section>
