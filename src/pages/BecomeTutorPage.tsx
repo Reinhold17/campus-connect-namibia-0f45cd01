@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -12,18 +13,19 @@ import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
 import {
   GraduationCap, CheckCircle, Loader2, User, FileCheck, ShieldCheck,
-  MapPin, BookOpen, ChevronRight, ChevronLeft, Upload, X, Plus, Lock
+  MapPin, BookOpen, ChevronRight, ChevronLeft, Upload, X, Plus, Lock, DollarSign, FileText, Eye
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 const STEPS = [
   { label: 'Basic Info', icon: User },
-  { label: 'Academic', icon: GraduationCap },
+  { label: 'Subjects & Rate', icon: DollarSign },
   { label: 'Identity', icon: ShieldCheck },
-  { label: 'Location', icon: MapPin },
   { label: 'Profile', icon: BookOpen },
+  { label: 'Review', icon: Eye },
+  { label: 'Agreement', icon: FileText },
 ];
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -41,29 +43,36 @@ export default function BecomeTutorPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Form state
+  // Step 1: Basic Information
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [university, setUniversity] = useState('');
   const [yearOfStudy, setYearOfStudy] = useState('');
 
-  const [studentIdFile, setStudentIdFile] = useState<File | null>(null);
-  const [transcriptFile, setTranscriptFile] = useState<File | null>(null);
+  // Step 2: Subjects & Rate
+  const [hourlyRate, setHourlyRate] = useState('');
   const [moduleGrades, setModuleGrades] = useState<ModuleGrade[]>([]);
   const [selectedFaculty, setSelectedFaculty] = useState('');
   const [selectedModule, setSelectedModule] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
 
+  // Step 3: Identity Verification
+  const [studentIdFile, setStudentIdFile] = useState<File | null>(null);
   const [governmentIdFile, setGovernmentIdFile] = useState<File | null>(null);
 
+  // Step 4: Profile Details
+  const [bio, setBio] = useState('');
+  const [teachingStyle, setTeachingStyle] = useState('');
   const [city, setCity] = useState('');
   const [campus, setCampus] = useState('');
   const [neighbourhood, setNeighbourhood] = useState('');
-
-  const [bio, setBio] = useState('');
-  const [teachingStyle, setTeachingStyle] = useState('');
   const [availability, setAvailability] = useState<Record<string, string[]>>({});
+
+  // Step 6: Legal Agreement
+  const [infoAccurate, setInfoAccurate] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [contractUnderstood, setContractUnderstood] = useState(false);
 
   // Pre-fill from profile
   useEffect(() => {
@@ -149,37 +158,47 @@ export default function BecomeTutorPage() {
 
   const validateStep = (): boolean => {
     switch (step) {
-      case 0:
+      case 0: // Basic Info
         if (!fullName || !email || !phone || !university || !yearOfStudy) {
           toast.error('Please fill in all required fields');
           return false;
         }
         return true;
-      case 1:
+      case 1: // Subjects & Rate
+        if (moduleGrades.length === 0) {
+          toast.error('Please add at least one subject you can tutor');
+          return false;
+        }
+        if (!hourlyRate || parseFloat(hourlyRate) < 50) {
+          toast.error('Please set an hourly rate (minimum N$50)');
+          return false;
+        }
+        return true;
+      case 2: // Identity Verification
         if (!studentIdFile) {
           toast.error('Please upload your student ID');
           return false;
         }
-        if (moduleGrades.length === 0) {
-          toast.error('Please add at least one module you can tutor');
-          return false;
-        }
-        return true;
-      case 2:
         if (!governmentIdFile) {
           toast.error('Please upload your government-issued ID');
           return false;
         }
         return true;
-      case 3:
+      case 3: // Profile Details
+        if (!bio) {
+          toast.error('Please write a short bio');
+          return false;
+        }
         if (!city || !campus) {
           toast.error('Please fill in city and campus');
           return false;
         }
         return true;
-      case 4:
-        if (!bio) {
-          toast.error('Please write a short bio');
+      case 4: // Review - no validation needed
+        return true;
+      case 5: // Legal Agreement
+        if (!infoAccurate || !termsAccepted || !contractUnderstood) {
+          toast.error('Please accept all required agreements');
           return false;
         }
         return true;
@@ -202,11 +221,9 @@ export default function BecomeTutorPage() {
       // Upload files
       let studentIdUrl = '';
       let governmentIdUrl = '';
-      let transcriptUrl = '';
 
       if (studentIdFile) studentIdUrl = await uploadFile(studentIdFile, 'student-id');
       if (governmentIdFile) governmentIdUrl = await uploadFile(governmentIdFile, 'government-id');
-      if (transcriptFile) transcriptUrl = await uploadFile(transcriptFile, 'transcript');
 
       // Update profile
       const subjects = moduleGrades.map(mg => mg.moduleName);
@@ -226,16 +243,12 @@ export default function BecomeTutorPage() {
           student_id_url: studentIdUrl,
           government_id_url: governmentIdUrl,
           availability: availability,
+          hourly_rate: parseFloat(hourlyRate),
           status: 'pending',
         })
         .eq('user_id', user.id);
 
       if (profileError) throw profileError;
-
-      // Upload transcript to payment-proofs bucket (existing bucket)
-      if (transcriptFile && transcriptUrl) {
-        // Already uploaded to identity-documents bucket above
-      }
 
       // Insert module grades
       if (moduleGrades.length > 0) {
@@ -251,7 +264,7 @@ export default function BecomeTutorPage() {
         if (gradesError) throw gradesError;
       }
 
-      // Also insert tutor_modules entries
+      // Insert tutor_modules entries
       const { error: tmError } = await supabase
         .from('tutor_modules')
         .insert(
@@ -261,6 +274,18 @@ export default function BecomeTutorPage() {
           }))
         );
       if (tmError && !tmError.message.includes('duplicate')) throw tmError;
+
+      // Store legal agreement acceptance
+      const { error: agreementError } = await supabase
+        .from('tutor_agreements' as any)
+        .insert({
+          user_id: user.id,
+          info_accurate: infoAccurate,
+          terms_accepted: termsAccepted,
+          contract_understood: contractUnderstood,
+          user_agent: navigator.userAgent,
+        });
+      if (agreementError) throw agreementError;
 
       // Notify admin
       try {
@@ -311,6 +336,9 @@ export default function BecomeTutorPage() {
 
   const progress = ((step + 1) / STEPS.length) * 100;
 
+  // Calculate tutor earnings (75% commission)
+  const tutorEarnings = hourlyRate ? (parseFloat(hourlyRate) * 0.75).toFixed(0) : '0';
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -326,7 +354,7 @@ export default function BecomeTutorPage() {
 
         {/* Stepper */}
         <div className="mb-6">
-          <div className="flex items-center justify-between gap-1 sm:gap-2">
+          <div className="flex items-center justify-between gap-1">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
               const isActive = i === step;
@@ -407,57 +435,45 @@ export default function BecomeTutorPage() {
             </div>
           )}
 
-          {/* Step 2: Academic Verification */}
+          {/* Step 2: Subjects & Hourly Rate */}
           {step === 1 && (
             <div className="space-y-4">
               <h2 className="font-display text-lg font-bold flex items-center gap-2">
-                <GraduationCap className="h-5 w-5 text-primary" /> Academic Verification
+                <DollarSign className="h-5 w-5 text-primary" /> Subjects & Hourly Rate
               </h2>
+              
+              {/* Hourly Rate */}
               <div>
-                <Label>Student ID *</Label>
-                <div className="mt-1">
-                  {studentIdFile ? (
-                    <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
-                      <FileCheck className="h-4 w-4 text-success" />
-                      <span className="flex-1 truncate text-sm">{studentIdFile.name}</span>
-                      <Button variant="ghost" size="icon" onClick={() => setStudentIdFile(null)}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
-                      <Upload className="h-8 w-8 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Click to upload student ID</span>
-                      <span className="text-xs text-muted-foreground">JPG, PNG or PDF</span>
-                      <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setStudentIdFile(e.target.files?.[0] || null)} />
-                    </label>
-                  )}
+                <Label htmlFor="hourlyRate">Your Hourly Rate (N$) *</Label>
+                <div className="mt-1 flex items-center gap-3">
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">N$</span>
+                    <Input
+                      id="hourlyRate"
+                      type="number"
+                      min="50"
+                      step="10"
+                      value={hourlyRate}
+                      onChange={e => setHourlyRate(e.target.value)}
+                      className="pl-10"
+                      placeholder="e.g. 150"
+                    />
+                  </div>
+                  <span className="text-sm text-muted-foreground">/ hour</span>
                 </div>
-              </div>
-              <div>
-                <Label>Academic Transcript (optional)</Label>
-                <div className="mt-1">
-                  {transcriptFile ? (
-                    <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
-                      <FileCheck className="h-4 w-4 text-success" />
-                      <span className="flex-1 truncate text-sm">{transcriptFile.name}</span>
-                      <Button variant="ghost" size="icon" onClick={() => setTranscriptFile(null)}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
-                      <Upload className="h-6 w-6 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Click to upload transcript</span>
-                      <input type="file" className="hidden" accept=".pdf,.jpg,.png" onChange={e => setTranscriptFile(e.target.files?.[0] || null)} />
-                    </label>
-                  )}
-                </div>
+                {hourlyRate && (
+                  <div className="mt-2 rounded-lg border bg-success/10 p-3 text-sm">
+                    <p className="font-medium text-success">Your Earnings: N${tutorEarnings}/hour</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Campus Connect takes a 25% platform commission. You receive 75% of each session payment.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Module + Grade selector */}
               <div>
-                <Label>Modules You Can Tutor *</Label>
+                <Label>Subjects You Can Tutor *</Label>
                 <div className="mt-2 space-y-3">
                   <div className="grid gap-2 sm:grid-cols-3">
                     <Select value={selectedFaculty} onValueChange={setSelectedFaculty}>
@@ -469,7 +485,7 @@ export default function BecomeTutorPage() {
                       </SelectContent>
                     </Select>
                     <Select value={selectedModule} onValueChange={setSelectedModule} disabled={!selectedFaculty}>
-                      <SelectTrigger><SelectValue placeholder="Module" /></SelectTrigger>
+                      <SelectTrigger><SelectValue placeholder="Subject" /></SelectTrigger>
                       <SelectContent>
                         {modules.map(m => (
                           <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
@@ -514,10 +530,36 @@ export default function BecomeTutorPage() {
                 <ShieldCheck className="h-5 w-5 text-primary" /> Identity Verification
               </h2>
               <p className="text-sm text-muted-foreground">
-                Upload a clear photo of your government-issued ID (Namibian ID card, passport, or driver's license).
+                Upload clear photos of your identification documents for verification.
               </p>
+              
+              {/* Student ID */}
+              <div>
+                <Label>Student ID / Student Card *</Label>
+                <div className="mt-1">
+                  {studentIdFile ? (
+                    <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
+                      <FileCheck className="h-4 w-4 text-success" />
+                      <span className="flex-1 truncate text-sm">{studentIdFile.name}</span>
+                      <Button variant="ghost" size="icon" onClick={() => setStudentIdFile(null)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Click to upload student ID</span>
+                      <span className="text-xs text-muted-foreground">JPG, PNG or PDF</span>
+                      <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setStudentIdFile(e.target.files?.[0] || null)} />
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              {/* Government ID */}
               <div>
                 <Label>Government ID *</Label>
+                <p className="text-xs text-muted-foreground mb-1">Namibian ID card, passport, or driver's license</p>
                 <div className="mt-1">
                   {governmentIdFile ? (
                     <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
@@ -528,34 +570,59 @@ export default function BecomeTutorPage() {
                       </Button>
                     </div>
                   ) : (
-                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-8 transition-colors hover:border-primary/50 hover:bg-muted/30">
-                      <Upload className="h-10 w-10 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground">Click to upload government ID</span>
+                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Click to upload government ID</span>
                       <span className="text-xs text-muted-foreground">JPG, PNG or PDF — Max 10MB</span>
                       <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setGovernmentIdFile(e.target.files?.[0] || null)} />
                     </label>
                   )}
                 </div>
               </div>
+
               <div className="rounded-lg border bg-muted/30 p-4 text-sm">
                 <div className="flex items-center gap-2 font-medium">
                   <Lock className="h-4 w-4 text-primary" />
                   Your data is secure
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  All personal data submitted to Campus Connect is securely stored and used strictly for verification and platform services. Your information will remain confidential and will not be shared without your permission.
+                  All documents are securely stored and used strictly for verification. Your information will remain confidential.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Step 4: Location */}
+          {/* Step 4: Profile Details */}
           {step === 3 && (
             <div className="space-y-4">
               <h2 className="font-display text-lg font-bold flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-primary" /> Location
+                <BookOpen className="h-5 w-5 text-primary" /> Profile Details
               </h2>
-              <p className="text-sm text-muted-foreground">Help students find tutors near them.</p>
+              
+              <div>
+                <Label htmlFor="bio">Bio *</Label>
+                <Textarea
+                  id="bio"
+                  value={bio}
+                  onChange={e => setBio(e.target.value)}
+                  placeholder="Tell students about yourself, your tutoring experience, and your approach to teaching..."
+                  rows={4}
+                  required
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="teachingStyle">Teaching Style</Label>
+                <Select value={teachingStyle} onValueChange={setTeachingStyle}>
+                  <SelectTrigger><SelectValue placeholder="Select your style" /></SelectTrigger>
+                  <SelectContent>
+                    {['Interactive & Hands-on', 'Visual & Diagram-based', 'Step-by-step Problem Solving', 'Discussion & Concept-based', 'Practice-heavy / Past Papers'].map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <Label htmlFor="city">City *</Label>
@@ -569,37 +636,6 @@ export default function BecomeTutorPage() {
               <div>
                 <Label htmlFor="neighbourhood">Residence / Neighbourhood</Label>
                 <Input id="neighbourhood" value={neighbourhood} onChange={e => setNeighbourhood(e.target.value)} placeholder="e.g. Pioneerspark" />
-              </div>
-            </div>
-          )}
-
-          {/* Step 5: Tutor Profile */}
-          {step === 4 && (
-            <div className="space-y-4">
-              <h2 className="font-display text-lg font-bold flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-primary" /> Tutor Profile
-              </h2>
-              <div>
-                <Label htmlFor="bio">Bio *</Label>
-                <Textarea
-                  id="bio"
-                  value={bio}
-                  onChange={e => setBio(e.target.value)}
-                  placeholder="Tell students about your tutoring experience and approach..."
-                  rows={3}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="teachingStyle">Teaching Style</Label>
-                <Select value={teachingStyle} onValueChange={setTeachingStyle}>
-                  <SelectTrigger><SelectValue placeholder="Select your style" /></SelectTrigger>
-                  <SelectContent>
-                    {['Interactive & Hands-on', 'Visual & Diagram-based', 'Step-by-step Problem Solving', 'Discussion & Concept-based', 'Practice-heavy / Past Papers'].map(s => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
 
               {/* Availability */}
@@ -645,6 +681,159 @@ export default function BecomeTutorPage() {
             </div>
           )}
 
+          {/* Step 5: Review */}
+          {step === 4 && (
+            <div className="space-y-4">
+              <h2 className="font-display text-lg font-bold flex items-center gap-2">
+                <Eye className="h-5 w-5 text-primary" /> Review Your Application
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Please review all the information you've provided before proceeding.
+              </p>
+
+              <div className="space-y-4">
+                {/* Basic Info Review */}
+                <div className="rounded-lg border p-4">
+                  <h3 className="font-semibold flex items-center gap-2 mb-2">
+                    <User className="h-4 w-4 text-primary" /> Basic Information
+                  </h3>
+                  <div className="grid gap-2 text-sm">
+                    <div className="flex justify-between"><span className="text-muted-foreground">Name:</span><span>{fullName}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Email:</span><span>{email}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span><span>{phone}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">University:</span><span>{university}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Year:</span><span>{yearOfStudy}</span></div>
+                  </div>
+                </div>
+
+                {/* Subjects & Rate Review */}
+                <div className="rounded-lg border p-4">
+                  <h3 className="font-semibold flex items-center gap-2 mb-2">
+                    <DollarSign className="h-4 w-4 text-primary" /> Subjects & Rate
+                  </h3>
+                  <div className="grid gap-2 text-sm">
+                    <div className="flex justify-between"><span className="text-muted-foreground">Hourly Rate:</span><span>N${hourlyRate}</span></div>
+                    <div className="flex justify-between"><span className="text-muted-foreground">Your Earnings:</span><span className="text-success font-medium">N${tutorEarnings}/hour</span></div>
+                    <div>
+                      <span className="text-muted-foreground">Subjects:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {moduleGrades.map(mg => (
+                          <Badge key={mg.moduleId} variant="secondary" className="text-xs">
+                            {mg.moduleName} ({mg.grade})
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Documents Review */}
+                <div className="rounded-lg border p-4">
+                  <h3 className="font-semibold flex items-center gap-2 mb-2">
+                    <ShieldCheck className="h-4 w-4 text-primary" /> Documents
+                  </h3>
+                  <div className="grid gap-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FileCheck className="h-4 w-4 text-success" />
+                      <span>Student ID: {studentIdFile?.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FileCheck className="h-4 w-4 text-success" />
+                      <span>Government ID: {governmentIdFile?.name}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Profile Review */}
+                <div className="rounded-lg border p-4">
+                  <h3 className="font-semibold flex items-center gap-2 mb-2">
+                    <BookOpen className="h-4 w-4 text-primary" /> Profile
+                  </h3>
+                  <div className="grid gap-2 text-sm">
+                    <div><span className="text-muted-foreground">Bio:</span><p className="mt-1">{bio}</p></div>
+                    {teachingStyle && <div className="flex justify-between"><span className="text-muted-foreground">Teaching Style:</span><span>{teachingStyle}</span></div>}
+                    <div className="flex justify-between"><span className="text-muted-foreground">Location:</span><span>{city}, {campus}</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 6: Legal Agreement */}
+          {step === 5 && (
+            <div className="space-y-4">
+              <h2 className="font-display text-lg font-bold flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" /> Legal Agreement
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Please review and accept the following agreements to complete your application.
+              </p>
+
+              <div className="space-y-4">
+                {/* Agreement 1 */}
+                <div className="flex items-start gap-3 rounded-lg border p-4">
+                  <Checkbox
+                    id="infoAccurate"
+                    checked={infoAccurate}
+                    onCheckedChange={(checked) => setInfoAccurate(checked === true)}
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="infoAccurate" className="font-medium cursor-pointer">
+                      I confirm that the information provided is accurate *
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      I certify that all information submitted in this application is true, complete, and accurate to the best of my knowledge.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Agreement 2 */}
+                <div className="flex items-start gap-3 rounded-lg border p-4">
+                  <Checkbox
+                    id="termsAccepted"
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="termsAccepted" className="font-medium cursor-pointer">
+                      I agree to the Campus Connect Tutor Agreement and Terms of Service *
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      I have read and agree to the <Link to="/terms" className="text-primary underline" target="_blank">Terms of Service</Link> and <Link to="/privacy" className="text-primary underline" target="_blank">Privacy Policy</Link>.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Agreement 3 */}
+                <div className="flex items-start gap-3 rounded-lg border p-4">
+                  <Checkbox
+                    id="contractUnderstood"
+                    checked={contractUnderstood}
+                    onCheckedChange={(checked) => setContractUnderstood(checked === true)}
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="contractUnderstood" className="font-medium cursor-pointer">
+                      I understand the tutoring contract terms and platform policies *
+                    </label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      I understand that Campus Connect takes a 25% platform commission, I will receive 75% of session payments, and I must be approved by an administrator before my profile becomes visible to students.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border bg-muted/30 p-4 text-sm">
+                <div className="flex items-center gap-2 font-medium">
+                  <Lock className="h-4 w-4 text-primary" />
+                  Agreement Timestamp
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Your acceptance will be recorded with a timestamp and stored securely for legal compliance.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Navigation */}
           <div className="mt-6 flex items-center justify-between border-t pt-4">
             <Button variant="outline" onClick={prevStep} disabled={step === 0}>
@@ -655,7 +844,7 @@ export default function BecomeTutorPage() {
                 Next <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit} disabled={submitting}>
+              <Button onClick={handleSubmit} disabled={submitting || !infoAccurate || !termsAccepted || !contractUnderstood}>
                 {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Submit Application
               </Button>
