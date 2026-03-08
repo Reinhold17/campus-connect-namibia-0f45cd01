@@ -232,9 +232,9 @@ function BookingCard({ booking, userId, queryClient }: { booking: any; userId: s
             </Dialog>
           )}
 
-          {booking.payment_status === 'uploaded' && (
+          {(booking.payment_status === 'uploaded' || booking.payment_status === 'pending_verification') && (
             <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
-              <CheckCircle className="h-3 w-3 text-warning" /> Awaiting confirmation
+              <CheckCircle className="h-3 w-3 text-warning" /> Awaiting admin verification
             </p>
           )}
         </div>
