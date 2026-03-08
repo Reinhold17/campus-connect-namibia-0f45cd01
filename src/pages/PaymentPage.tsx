@@ -280,8 +280,8 @@ export default function PaymentPage() {
             </div>
 
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-              <p className="text-sm text-primary font-medium">
-                💡 Use your name as the payment reference so we can match your payment.
+              <p className="text-sm text-primary font-medium flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 shrink-0" /> Use your name as the payment reference so we can match your payment.
               </p>
             </div>
 

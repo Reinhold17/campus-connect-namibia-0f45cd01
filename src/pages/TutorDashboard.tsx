@@ -130,7 +130,7 @@ export default function TutorDashboard() {
           <div className="absolute -bottom-4 -left-4 h-32 w-32 rounded-full bg-[hsl(39,90%,55%/0.08)] blur-xl" />
           <div className="relative">
             <p className="text-sm font-medium text-primary-foreground/70">Welcome back,</p>
-            <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl">{profile?.name || 'Tutor'} 👋</h2>
+            <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl flex items-center gap-2">{profile?.name || 'Tutor'} <Sparkles className="h-6 w-6 text-[hsl(39,90%,55%)]" /></h2>
             <p className="mt-2 max-w-lg text-sm text-primary-foreground/60">
               Manage your sessions, track your students, and grow your tutoring career.
             </p>
