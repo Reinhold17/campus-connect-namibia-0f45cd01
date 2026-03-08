@@ -14,8 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 export default function TutorProfilePage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const { user, isAuthenticated, role } = useAuth();
+  const { isAuthenticated, role } = useAuth();
 
   const { data: tutor, isLoading: tutorLoading } = useQuery({
     queryKey: ['tutor-profile', id],
