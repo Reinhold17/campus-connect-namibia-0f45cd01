@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 const sidebarItems = [
   { label: 'My Bookings', icon: Calendar, to: '/student' },
   { label: 'Browse Tutors', icon: Search, to: '/browse' },
+  { label: 'AI Study Planner', icon: Sparkles, to: '/student/study-planner' },
   { label: 'Profile Settings', icon: User, to: '/student/profile' },
 ];
 

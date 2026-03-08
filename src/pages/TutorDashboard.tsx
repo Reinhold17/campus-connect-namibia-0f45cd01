@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 const sidebarItems = [
   { label: 'My Sessions', icon: Calendar, to: '/tutor' },
   { label: 'Create Session', icon: CalendarPlus, to: '/tutor/create' },
+  { label: 'AI Lesson Planner', icon: Sparkles, to: '/tutor/lesson-planner' },
   { label: 'Enrolled Students', icon: Users, to: '/tutor/students' },
   { label: 'Ratings', icon: Star, to: '/tutor/ratings' },
   { label: 'Notifications', icon: Bell, to: '/tutor/notifications' },
