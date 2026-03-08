@@ -8,6 +8,7 @@ import { sendNotification } from '@/lib/notifications';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, BookOpen, Calendar, Clock, Users, AlertTriangle, Loader2 } from 'lucide-react';
+import { VerifiedBadge, isTutorVerified } from '@/components/VerifiedBadge';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -147,7 +148,12 @@ export default function TutorProfilePage() {
               {initials}
             </div>
             <div className="flex-1">
-              <h1 className="font-display text-2xl font-bold md:text-3xl">{tutor.name}</h1>
+              <h1 className="font-display text-2xl font-bold md:text-3xl">
+                {tutor.name}
+                {isTutorVerified(tutor) && (
+                  <span className="ml-2 inline-block align-middle"><VerifiedBadge size="lg" showLabel /></span>
+                )}
+              </h1>
               <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 {tutor.university && <span className="flex items-center gap-1"><GraduationCap className="h-4 w-4" />{tutor.university}</span>}
                 <RatingStars rating={tutor.rating || 0} />

@@ -121,6 +121,8 @@ export default function BrowseTutorsPage() {
     rating: t.rating ? Number(t.rating) : undefined,
     reviewCount: t.review_count ?? undefined,
     createdAt: '',
+    student_id_url: (t as any).student_id_url,
+    government_id_url: (t as any).government_id_url,
   });
 
   return (
