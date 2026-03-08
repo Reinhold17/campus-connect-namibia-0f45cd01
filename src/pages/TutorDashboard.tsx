@@ -4,7 +4,7 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { RatingStars } from '@/components/RatingStars';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
-import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2 } from 'lucide-react';
+import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 const sidebarItems = [
   { label: 'My Sessions', icon: Calendar, to: '/tutor' },
   { label: 'Create Session', icon: CalendarPlus, to: '/tutor/create' },
+  { label: 'AI Lesson Planner', icon: Sparkles, to: '/tutor/lesson-planner' },
   { label: 'Enrolled Students', icon: Users, to: '/tutor/students' },
   { label: 'Ratings', icon: Star, to: '/tutor/ratings' },
   { label: 'Notifications', icon: Bell, to: '/tutor/notifications' },
