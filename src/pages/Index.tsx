@@ -153,7 +153,7 @@ const Index = () => {
 
       {/* Featured Tutors */}
       <section className="py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-5 sm:px-6">
           <div className="mb-12 text-center">
             <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Top Rated Tutors</h2>
             <p className="mt-3 text-muted-foreground">Meet some of our highest-rated tutors</p>

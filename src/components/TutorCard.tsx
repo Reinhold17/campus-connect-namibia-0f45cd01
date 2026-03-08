@@ -14,7 +14,7 @@ export function TutorCard({ tutor }: TutorCardProps) {
   const initials = tutor.name.split(' ').map(n => n[0]).join('');
 
   return (
-    <div className="group rounded-xl border bg-card p-5 shadow-card transition-all duration-300 hover:shadow-elevated">
+    <div className="group rounded-xl border bg-card p-4 sm:p-5 shadow-card transition-all duration-300 hover:shadow-elevated overflow-hidden">
       <div className="flex items-start gap-4">
         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-primary-foreground">
           {initials}
@@ -47,12 +47,12 @@ export function TutorCard({ tutor }: TutorCardProps) {
         ))}
       </div>
 
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <Badge variant="outline" className="text-xs gap-1">
           <Users className="h-3 w-3" />
-          Currently Enrolled
+          Enrolled
         </Badge>
-        <Button size="sm" asChild>
+        <Button size="sm" asChild className="shrink-0">
           <Link to={`/tutors/${(tutor as any).user_id || tutor.id}`}>View Profile</Link>
         </Button>
       </div>
