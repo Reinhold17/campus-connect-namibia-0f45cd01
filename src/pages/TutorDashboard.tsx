@@ -253,6 +253,7 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [maxStudents, setMaxStudents] = useState('10');
+  const [whatsappUrl, setWhatsappUrl] = useState('');
 
   const createMutation = useMutation({
     mutationFn: async () => {
