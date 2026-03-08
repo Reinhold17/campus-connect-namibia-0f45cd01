@@ -47,12 +47,12 @@ export function TutorCard({ tutor }: TutorCardProps) {
         ))}
       </div>
 
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
         <Badge variant="outline" className="text-xs gap-1">
           <Users className="h-3 w-3" />
-          Currently Enrolled
+          Enrolled
         </Badge>
-        <Button size="sm" asChild>
+        <Button size="sm" asChild className="shrink-0">
           <Link to={`/tutors/${(tutor as any).user_id || tutor.id}`}>View Profile</Link>
         </Button>
       </div>
