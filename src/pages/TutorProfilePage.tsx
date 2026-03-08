@@ -72,9 +72,25 @@ export default function TutorProfilePage() {
         payment_status: 'pending',
       });
       if (error) throw error;
+
+      // Find session details for notification
+      const session = sessions.find(s => s.id === sessionId);
+      if (session) {
+        // Notify student
+        await sendNotification({
+          type: 'booking_confirmed',
+          recipientUserId: user!.id,
+          data: {
+            subject: session.subject,
+            tutorName: tutor?.name || 'Tutor',
+            date: session.date,
+            time: session.time,
+          },
+        });
+      }
     },
     onSuccess: () => {
-      toast.success('Session booked! Please upload payment proof from your dashboard.');
+      toast.success('Session booked! Check your email for confirmation.');
       queryClient.invalidateQueries({ queryKey: ['session-booking-counts'] });
       navigate('/student');
     },
