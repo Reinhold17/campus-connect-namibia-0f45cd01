@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/NotificationBell';
-import { GraduationCap, LogOut, ChevronLeft, ChevronRight, Menu, X } from 'lucide-react';
+import { GraduationCap, LogOut, ChevronLeft, ChevronRight, Menu, X, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SidebarItem {
@@ -160,6 +160,14 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
           >
             <Menu className="h-5 w-5" />
           </button>
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Home</span>
+          </Link>
+          <span className="text-muted-foreground/40">|</span>
           <h1 className="font-display text-lg font-bold lg:text-xl">{title}</h1>
           {profile && (
             <div className="ml-auto flex items-center gap-3">
