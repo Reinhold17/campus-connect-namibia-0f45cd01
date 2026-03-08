@@ -43,6 +43,7 @@ const App = () => (
             <Route path="/student/*" element={<ProtectedRoute allowedRoles={['student']}><StudentDashboard /></ProtectedRoute>} />
             <Route path="/tutor" element={<ProtectedRoute allowedRoles={['tutor']}><TutorDashboard /></ProtectedRoute>} />
             <Route path="/tutor/lesson-planner" element={<ProtectedRoute allowedRoles={['tutor']}><TutorLessonPlanner /></ProtectedRoute>} />
+            <Route path="/tutor/students" element={<ProtectedRoute allowedRoles={['tutor']}><TutorEnrolledStudents /></ProtectedRoute>} />
             <Route path="/tutor/*" element={<ProtectedRoute allowedRoles={['tutor']}><TutorDashboard /></ProtectedRoute>} />
             <Route path="/tutors/:id" element={<TutorProfilePage />} />
             <Route path="/payment/:sessionId" element={<ProtectedRoute allowedRoles={['student']}><PaymentPage /></ProtectedRoute>} />
