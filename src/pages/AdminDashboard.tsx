@@ -205,10 +205,10 @@ function PaymentCard({ payment, onConfirm }: { payment: any; onConfirm: any }) {
           <p className="text-xs text-muted-foreground">{payment.student?.email}</p>
         </div>
         <div className="flex gap-2">
-          <Button size="sm" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: true })}>
+          <Button size="sm" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: true, studentId: payment.student_id, subject: payment.sessions?.subject })}>
             Confirm
           </Button>
-          <Button size="sm" variant="outline" className="text-destructive" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: false })}>
+          <Button size="sm" variant="outline" className="text-destructive" onClick={() => onConfirm.mutate({ bookingId: payment.id, confirm: false, studentId: payment.student_id, subject: payment.sessions?.subject })}>
             Reject
           </Button>
           <Button size="sm" variant="outline" onClick={handleViewProof}>
