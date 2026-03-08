@@ -916,9 +916,18 @@ function PaymentCard({ payment, onConfirm }: { payment: any; onConfirm: any }) {
       <Dialog open={viewOpen} onOpenChange={setViewOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Payment Proof</DialogTitle></DialogHeader>
-          {proofUrl && (isPdf 
-            ? <iframe src={proofUrl} className="w-full h-[500px] rounded-lg" title="Payment proof PDF" />
-            : <img src={proofUrl} alt="Payment proof" className="w-full rounded-lg" />
+          {proofUrl && (
+            <>
+              {isPdf 
+                ? <iframe src={proofUrl} className="w-full h-[500px] rounded-lg" title="Payment proof PDF" />
+                : <img src={proofUrl} alt="Payment proof" className="w-full rounded-lg" />
+              }
+              <a href={proofUrl} download target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="w-full mt-3 gap-2">
+                  <ExternalLink className="h-4 w-4" /> Download Proof
+                </Button>
+              </a>
+            </>
           )}
         </DialogContent>
       </Dialog>
