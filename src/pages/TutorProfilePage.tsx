@@ -162,7 +162,7 @@ export default function TutorProfilePage() {
                     <Button
                       className="mt-4 w-full"
                       size="sm"
-                      disabled={isFull || bookMutation.isPending}
+                      disabled={isFull}
                       onClick={() => handleBook(session.id)}
                     >
                       {isFull ? 'Session Full' : isAuthenticated ? 'Book Tutor' : 'Sign Up to Book'}
