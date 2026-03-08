@@ -17,6 +17,9 @@ import TutorDashboard from "./pages/TutorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import StudentStudyPlanner from "./pages/StudentStudyPlanner";
 import TutorLessonPlanner from "./pages/TutorLessonPlanner";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TrustSafetyPage from "./pages/TrustSafetyPage";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,9 @@ const App = () => (
             <Route path="/tutors/:id" element={<TutorProfilePage />} />
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/*" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/trust-safety" element={<TrustSafetyPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
