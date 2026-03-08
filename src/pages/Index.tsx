@@ -1,26 +1,27 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { RatingStars } from '@/components/RatingStars';
+import { Input } from '@/components/ui/input';
 import { TutorCard } from '@/components/TutorCard';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { mockTutors } from '@/lib/mock-data';
-import { Search, Calendar, Upload, MapPin, ShieldCheck, Users, DollarSign, GraduationCap } from 'lucide-react';
+import { Search, UserCheck, CalendarCheck, BookOpen, ShieldCheck, Star, DollarSign, GraduationCap, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import heroImage from '@/assets/hero-image.jpg';
+import { useState } from 'react';
 
 const steps = [
-  { icon: Search, title: 'Search Tutor', description: 'Browse verified tutors by subject and university.' },
-  { icon: Calendar, title: 'Book Session', description: 'Choose a group or one-on-one session that fits your schedule.' },
-  { icon: Upload, title: 'Upload Payment', description: 'Submit proof of bank deposit to confirm your booking.' },
-  { icon: MapPin, title: 'Attend Class', description: 'Meet your tutor at the physical session location on campus.' },
+  { icon: Search, title: 'Find Your Tutor', description: 'Search by subject, module, or university to discover the right tutor for you.' },
+  { icon: UserCheck, title: 'Pick Who Fits You', description: 'Browse tutor profiles, read reviews, and choose someone who matches your learning style.' },
+  { icon: CalendarCheck, title: 'Book a Session', description: 'Select from available sessions your tutor offers — at times and places that work for you.' },
+  { icon: BookOpen, title: 'Start Learning', description: 'Meet your tutor in person, get the help you need, and watch your grades improve.' },
 ];
 
 const features = [
-  { icon: ShieldCheck, title: 'Verified Tutors', description: 'Every tutor is reviewed and approved by our admin team.' },
-  { icon: MapPin, title: 'Physical Sessions', description: 'Real in-person tutoring on or near your university campus.' },
-  { icon: DollarSign, title: 'Affordable Pricing', description: 'Group sessions at N$350 and one-on-one at N$500.' },
-  { icon: GraduationCap, title: 'University-Focused', description: 'Built specifically for Namibian university students.' },
+  { icon: ShieldCheck, title: 'Verified & Approved', description: 'Every tutor is ID-verified and approved by our team before they can teach.' },
+  { icon: Star, title: 'Student Reviews', description: 'Read honest reviews from other students to find tutors who actually deliver results.' },
+  { icon: DollarSign, title: 'Transparent Pricing', description: 'See tutor rates upfront. No hidden fees — you choose what fits your budget.' },
+  { icon: GraduationCap, title: 'Your Campus, Your Tutor', description: 'Find tutors at your university who understand your exact curriculum and modules.' },
 ];
 
 const fadeUp = {
@@ -33,13 +34,23 @@ const fadeUp = {
 
 const Index = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
   const topTutors = mockTutors.filter(t => (t.rating || 0) >= 4.5).slice(0, 3);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/browse?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate('/browse');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />
 
-      {/* Hero */}
+      {/* Hero — Student-focused */}
       <section className="relative overflow-hidden bg-hero-gradient py-20 lg:py-32">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] opacity-50" />
         <div className="container relative mx-auto px-4">
@@ -50,27 +61,44 @@ const Index = () => {
               transition={{ duration: 0.7 }}
             >
               <h1 className="font-display text-4xl font-extrabold leading-tight text-primary-foreground md:text-5xl lg:text-6xl">
-                Find Verified Tutors.{' '}
-                <span className="text-gradient-gold">Improve Your Grades.</span>
+                Struggling with a Module?{' '}
+                <span className="text-gradient-gold">We'll Match You.</span>
               </h1>
               <p className="mt-5 max-w-lg text-lg text-primary-foreground/75">
-                Book physical group or one-on-one sessions near your campus. Trusted by students across Namibian universities.
+                Find a verified tutor who knows your exact curriculum. Choose your session, book in seconds, and start improving your grades.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+
+              {/* Search Bar */}
+              <form onSubmit={handleSearch} className="mt-8 flex w-full max-w-lg gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    placeholder="What do you need help with? e.g. Calculus, Physics..."
+                    className="h-12 pl-10 bg-background/95 text-foreground border-0 shadow-elevated placeholder:text-muted-foreground"
+                  />
+                </div>
                 <Button
+                  type="submit"
                   size="lg"
-                  className="bg-gold-gradient font-semibold text-accent-foreground shadow-glow hover:opacity-90"
-                  onClick={() => navigate('/browse')}
+                  className="h-12 bg-gold-gradient font-semibold text-accent-foreground shadow-glow hover:opacity-90"
                 >
-                  Browse Tutors
+                  Find Tutors
                 </Button>
-                <Button
-                  size="lg"
-                  className="bg-primary font-semibold text-primary-foreground shadow-elevated transition-all duration-300 hover:bg-primary/85 hover:shadow-glow"
-                  onClick={() => navigate('/become-tutor')}
-                >
-                  Become a Tutor
-                </Button>
+              </form>
+
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-primary-foreground/60">
+                <span>Popular:</span>
+                {['Mathematics', 'Accounting', 'Physics', 'Programming'].map(subject => (
+                  <button
+                    key={subject}
+                    onClick={() => navigate(`/browse?q=${encodeURIComponent(subject)}`)}
+                    className="rounded-full border border-primary-foreground/20 px-3 py-1 text-xs text-primary-foreground/70 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  >
+                    {subject}
+                  </button>
+                ))}
               </div>
             </motion.div>
 
@@ -95,7 +123,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">How It Works</h2>
-            <p className="mt-3 text-muted-foreground">Four simple steps to academic success</p>
+            <p className="mt-3 text-muted-foreground">Getting help has never been easier</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, i) => (
@@ -126,7 +154,7 @@ const Index = () => {
       <section className="bg-muted/50 py-20">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Why Choose Us</h2>
+            <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Why Students Trust Us</h2>
             <p className="mt-3 text-muted-foreground">Built for Namibian students, by Namibian students</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -156,7 +184,7 @@ const Index = () => {
         <div className="container mx-auto px-5 sm:px-6">
           <div className="mb-12 text-center">
             <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">Top Rated Tutors</h2>
-            <p className="mt-3 text-muted-foreground">Meet some of our highest-rated tutors</p>
+            <p className="mt-3 text-muted-foreground">Highly reviewed tutors ready to help you succeed</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {topTutors.map((tutor) => (
@@ -164,10 +192,46 @@ const Index = () => {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Button variant="outline" size="lg" onClick={() => navigate('/browse')}>
-              View All Tutors
+            <Button size="lg" onClick={() => navigate('/browse')} className="gap-2">
+              Browse All Tutors <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <section className="bg-hero-gradient py-16">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="font-display text-3xl font-bold text-primary-foreground md:text-4xl">
+              Ready to Ace Your Next Exam?
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-primary-foreground/70">
+              Join hundreds of students already improving their grades with Campus Connect tutors.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Button
+                size="lg"
+                className="bg-gold-gradient font-semibold text-accent-foreground shadow-glow hover:opacity-90"
+                onClick={() => navigate('/browse')}
+              >
+                Find a Tutor Now
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+                onClick={() => navigate('/signup')}
+              >
+                Create Free Account
+              </Button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
