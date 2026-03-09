@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { GraduationCap, BookOpen, Calendar, Clock, Users, Loader2 } from 'lucide-react';
 import { VerifiedBadge, isTutorVerified } from '@/components/VerifiedBadge';
+import { TutorPhotoGallery } from '@/components/TutorPhotoGallery';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 
