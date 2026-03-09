@@ -185,7 +185,7 @@ export default function BecomeTutorPage() {
         }
         return true;
       case 2: // Identity Verification
-        if (!studentIdFile) {
+        if (isStudent && !studentIdFile) {
           toast.error('Please upload your student ID');
           return false;
         }
