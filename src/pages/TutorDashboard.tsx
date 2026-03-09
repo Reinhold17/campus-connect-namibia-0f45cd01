@@ -135,7 +135,12 @@ export default function TutorDashboard() {
             <p className="mt-2 max-w-lg text-sm text-primary-foreground/60">
               Manage your sessions, track your students, and grow your tutoring career.
             </p>
-          </div>
+           </div>
+         </div>
+
+        {/* Profile Photos */}
+        <div className="rounded-2xl border bg-card p-5 shadow-card">
+          <TutorPhotoUpload />
         </div>
 
         {/* Stat Cards */}
