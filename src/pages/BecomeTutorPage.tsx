@@ -573,28 +573,30 @@ export default function BecomeTutorPage() {
                 Upload clear photos of your identification documents for verification.
               </p>
               
-              {/* Student ID */}
-              <div>
-                <Label>Student ID / Student Card *</Label>
-                <div className="mt-1">
-                  {studentIdFile ? (
-                    <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
-                      <FileCheck className="h-4 w-4 text-success" />
-                      <span className="flex-1 truncate text-sm">{studentIdFile.name}</span>
-                      <Button variant="ghost" size="icon" onClick={() => setStudentIdFile(null)}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
-                      <Upload className="h-8 w-8 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Click to upload student ID</span>
-                      <span className="text-xs text-muted-foreground">JPG, PNG or PDF</span>
-                      <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setStudentIdFile(e.target.files?.[0] || null)} />
-                    </label>
-                  )}
+              {/* Student ID - only for students */}
+              {isStudent && (
+                <div>
+                  <Label>Student ID / Student Card *</Label>
+                  <div className="mt-1">
+                    {studentIdFile ? (
+                      <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
+                        <FileCheck className="h-4 w-4 text-success" />
+                        <span className="flex-1 truncate text-sm">{studentIdFile.name}</span>
+                        <Button variant="ghost" size="icon" onClick={() => setStudentIdFile(null)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
+                        <Upload className="h-8 w-8 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Click to upload student ID</span>
+                        <span className="text-xs text-muted-foreground">JPG, PNG or PDF</span>
+                        <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setStudentIdFile(e.target.files?.[0] || null)} />
+                      </label>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Government ID */}
               <div>
