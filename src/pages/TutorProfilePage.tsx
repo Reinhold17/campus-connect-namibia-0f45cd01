@@ -63,6 +63,20 @@ export default function TutorProfilePage() {
     enabled: sessions.length > 0,
   });
 
+  const { data: tutorPhotos = [] } = useQuery({
+    queryKey: ['tutor-photos-public', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tutor_photos' as any)
+        .select('*')
+        .eq('user_id', id!)
+        .order('display_order');
+      if (error) throw error;
+      return data as any[];
+    },
+    enabled: !!id,
+  });
+
   const handleBook = (sessionId: string) => {
     if (!isAuthenticated) {
       toast.info('Please sign up or log in to book a session');
