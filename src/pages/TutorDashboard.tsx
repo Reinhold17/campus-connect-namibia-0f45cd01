@@ -3,12 +3,13 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
-import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles, TrendingUp, DollarSign, BookOpen } from 'lucide-react';
+import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles, TrendingUp, DollarSign, BookOpen, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { TutorPhotoUpload } from '@/components/TutorPhotoUpload';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -134,7 +135,12 @@ export default function TutorDashboard() {
             <p className="mt-2 max-w-lg text-sm text-primary-foreground/60">
               Manage your sessions, track your students, and grow your tutoring career.
             </p>
-          </div>
+           </div>
+         </div>
+
+        {/* Profile Photos */}
+        <div className="rounded-2xl border bg-card p-5 shadow-card">
+          <TutorPhotoUpload />
         </div>
 
         {/* Stat Cards */}
@@ -249,10 +255,10 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   const [subject, setSubject] = useState('');
   const [type, setType] = useState('group');
   const [price, setPrice] = useState('');
-  const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [maxStudents, setMaxStudents] = useState('10');
+  const [sessionUrl, setSessionUrl] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
 
   const createMutation = useMutation({
@@ -262,7 +268,7 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         subject,
         type,
         price: parseFloat(price),
-        location,
+        location: sessionUrl || '',
         date,
         time,
         max_students: type === 'one-on-one' ? 1 : parseInt(maxStudents),
@@ -308,13 +314,14 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         )}
       </div>
       <div>
-        <Label>Location</Label>
-        <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. UNAM Library Room 2" required />
+        <Label className="flex items-center gap-1.5"><LinkIcon className="h-3.5 w-3.5" /> Session Link</Label>
+        <Input value={sessionUrl} onChange={e => setSessionUrl(e.target.value)} placeholder="https://meet.google.com/... or location URL" />
+        <p className="mt-1 text-xs text-muted-foreground">Add a meeting link, Google Maps link, or any URL for the session</p>
       </div>
       <div>
-        <Label>WhatsApp Group Link</Label>
+        <Label className="flex items-center gap-1.5"><LinkIcon className="h-3.5 w-3.5" /> WhatsApp Group Link</Label>
         <Input value={whatsappUrl} onChange={e => setWhatsappUrl(e.target.value)} placeholder="https://chat.whatsapp.com/..." />
-        <p className="mt-1 text-xs text-muted-foreground">Students will see this link after their payment is confirmed</p>
+        <p className="mt-1 text-xs text-muted-foreground">Students will see this after payment is confirmed</p>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>

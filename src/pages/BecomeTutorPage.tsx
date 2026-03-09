@@ -47,8 +47,10 @@ export default function BecomeTutorPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [isStudent, setIsStudent] = useState(true);
   const [university, setUniversity] = useState('');
   const [yearOfStudy, setYearOfStudy] = useState('');
+  const [qualification, setQualification] = useState('');
 
   // Step 2: Subjects & Rate
   const [hourlyRate, setHourlyRate] = useState('');
@@ -159,8 +161,16 @@ export default function BecomeTutorPage() {
   const validateStep = (): boolean => {
     switch (step) {
       case 0: // Basic Info
-        if (!fullName || !email || !phone || !university || !yearOfStudy) {
+        if (!fullName || !email || !phone) {
           toast.error('Please fill in all required fields');
+          return false;
+        }
+        if (isStudent && (!university || !yearOfStudy)) {
+          toast.error('Please fill in university and year of study');
+          return false;
+        }
+        if (!isStudent && !qualification) {
+          toast.error('Please enter your qualification');
           return false;
         }
         return true;
@@ -175,7 +185,7 @@ export default function BecomeTutorPage() {
         }
         return true;
       case 2: // Identity Verification
-        if (!studentIdFile) {
+        if (isStudent && !studentIdFile) {
           toast.error('Please upload your student ID');
           return false;
         }
@@ -232,15 +242,15 @@ export default function BecomeTutorPage() {
         .update({
           name: fullName,
           phone_number: phone,
-          university,
-          year_of_study: yearOfStudy,
+          university: isStudent ? university : (qualification || 'Independent Tutor'),
+          year_of_study: isStudent ? yearOfStudy : 'N/A',
           subjects,
           bio,
           teaching_style: teachingStyle,
           city,
           campus,
           neighbourhood,
-          student_id_url: studentIdUrl,
+          student_id_url: studentIdUrl || null,
           government_id_url: governmentIdUrl,
           availability: availability,
           hourly_rate: parseFloat(hourlyRate),
@@ -404,34 +414,64 @@ export default function BecomeTutorPage() {
                   <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input id="phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+264 81 234 5678" required />
-                </div>
-                <div>
-                  <Label htmlFor="yearOfStudy">Year of Study *</Label>
-                  <Select value={yearOfStudy} onValueChange={setYearOfStudy}>
-                    <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
-                    <SelectContent>
-                      {['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate'].map(y => (
-                        <SelectItem key={y} value={y}>{y}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
               <div>
-                <Label htmlFor="university">University *</Label>
-                <Select value={university} onValueChange={setUniversity}>
-                  <SelectTrigger><SelectValue placeholder="Select university" /></SelectTrigger>
-                  <SelectContent>
-                    {universities.map(u => (
-                      <SelectItem key={u.id} value={u.name}>{u.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input id="phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+264 81 234 5678" required />
               </div>
+
+              {/* Student or Non-Student Toggle */}
+              <div className="rounded-lg border p-4">
+                <Label className="mb-2 block">Are you currently a student?</Label>
+                <div className="flex gap-3">
+                  <Button type="button" variant={isStudent ? 'default' : 'outline'} size="sm" onClick={() => setIsStudent(true)}>
+                    Yes, I'm a student
+                  </Button>
+                  <Button type="button" variant={!isStudent ? 'default' : 'outline'} size="sm" onClick={() => setIsStudent(false)}>
+                    No, I'm not a student
+                  </Button>
+                </div>
+              </div>
+
+              {isStudent ? (
+                <>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <Label htmlFor="university">University *</Label>
+                      <Select value={university} onValueChange={setUniversity}>
+                        <SelectTrigger><SelectValue placeholder="Select university" /></SelectTrigger>
+                        <SelectContent>
+                          {universities.map(u => (
+                            <SelectItem key={u.id} value={u.name}>{u.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="yearOfStudy">Year of Study *</Label>
+                      <Select value={yearOfStudy} onValueChange={setYearOfStudy}>
+                        <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
+                        <SelectContent>
+                          {['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate'].map(y => (
+                            <SelectItem key={y} value={y}>{y}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <Label htmlFor="qualification">Qualification / Background *</Label>
+                  <Input
+                    id="qualification"
+                    value={qualification}
+                    onChange={e => setQualification(e.target.value)}
+                    placeholder="e.g. BSc Mathematics, CPA, Professional Engineer"
+                    required
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">Describe your educational background or professional qualification</p>
+                </div>
+              )}
             </div>
           )}
 
@@ -533,28 +573,30 @@ export default function BecomeTutorPage() {
                 Upload clear photos of your identification documents for verification.
               </p>
               
-              {/* Student ID */}
-              <div>
-                <Label>Student ID / Student Card *</Label>
-                <div className="mt-1">
-                  {studentIdFile ? (
-                    <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
-                      <FileCheck className="h-4 w-4 text-success" />
-                      <span className="flex-1 truncate text-sm">{studentIdFile.name}</span>
-                      <Button variant="ghost" size="icon" onClick={() => setStudentIdFile(null)}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
-                      <Upload className="h-8 w-8 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Click to upload student ID</span>
-                      <span className="text-xs text-muted-foreground">JPG, PNG or PDF</span>
-                      <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setStudentIdFile(e.target.files?.[0] || null)} />
-                    </label>
-                  )}
+              {/* Student ID - only for students */}
+              {isStudent && (
+                <div>
+                  <Label>Student ID / Student Card *</Label>
+                  <div className="mt-1">
+                    {studentIdFile ? (
+                      <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
+                        <FileCheck className="h-4 w-4 text-success" />
+                        <span className="flex-1 truncate text-sm">{studentIdFile.name}</span>
+                        <Button variant="ghost" size="icon" onClick={() => setStudentIdFile(null)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <label className="flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 p-6 transition-colors hover:border-primary/50 hover:bg-muted/30">
+                        <Upload className="h-8 w-8 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">Click to upload student ID</span>
+                        <span className="text-xs text-muted-foreground">JPG, PNG or PDF</span>
+                        <input type="file" className="hidden" accept=".jpg,.jpeg,.png,.pdf" onChange={e => setStudentIdFile(e.target.files?.[0] || null)} />
+                      </label>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Government ID */}
               <div>
@@ -701,8 +743,14 @@ export default function BecomeTutorPage() {
                     <div className="flex justify-between"><span className="text-muted-foreground">Name:</span><span>{fullName}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Email:</span><span>{email}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span><span>{phone}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">University:</span><span>{university}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Year:</span><span>{yearOfStudy}</span></div>
+                    {isStudent ? (
+                      <>
+                        <div className="flex justify-between"><span className="text-muted-foreground">University:</span><span>{university}</span></div>
+                        <div className="flex justify-between"><span className="text-muted-foreground">Year:</span><span>{yearOfStudy}</span></div>
+                      </>
+                    ) : (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Qualification:</span><span>{qualification}</span></div>
+                    )}
                   </div>
                 </div>
 
@@ -733,10 +781,12 @@ export default function BecomeTutorPage() {
                     <ShieldCheck className="h-4 w-4 text-primary" /> Documents
                   </h3>
                   <div className="grid gap-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <FileCheck className="h-4 w-4 text-success" />
-                      <span>Student ID: {studentIdFile?.name}</span>
-                    </div>
+                    {isStudent && studentIdFile && (
+                      <div className="flex items-center gap-2">
+                        <FileCheck className="h-4 w-4 text-success" />
+                        <span>Student ID: {studentIdFile.name}</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <FileCheck className="h-4 w-4 text-success" />
                       <span>Government ID: {governmentIdFile?.name}</span>
