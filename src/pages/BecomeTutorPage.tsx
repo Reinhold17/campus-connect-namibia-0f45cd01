@@ -414,34 +414,64 @@ export default function BecomeTutorPage() {
                   <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
                 </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input id="phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+264 81 234 5678" required />
-                </div>
-                <div>
-                  <Label htmlFor="yearOfStudy">Year of Study *</Label>
-                  <Select value={yearOfStudy} onValueChange={setYearOfStudy}>
-                    <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
-                    <SelectContent>
-                      {['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate'].map(y => (
-                        <SelectItem key={y} value={y}>{y}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
               <div>
-                <Label htmlFor="university">University *</Label>
-                <Select value={university} onValueChange={setUniversity}>
-                  <SelectTrigger><SelectValue placeholder="Select university" /></SelectTrigger>
-                  <SelectContent>
-                    {universities.map(u => (
-                      <SelectItem key={u.id} value={u.name}>{u.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input id="phone" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+264 81 234 5678" required />
               </div>
+
+              {/* Student or Non-Student Toggle */}
+              <div className="rounded-lg border p-4">
+                <Label className="mb-2 block">Are you currently a student?</Label>
+                <div className="flex gap-3">
+                  <Button type="button" variant={isStudent ? 'default' : 'outline'} size="sm" onClick={() => setIsStudent(true)}>
+                    Yes, I'm a student
+                  </Button>
+                  <Button type="button" variant={!isStudent ? 'default' : 'outline'} size="sm" onClick={() => setIsStudent(false)}>
+                    No, I'm not a student
+                  </Button>
+                </div>
+              </div>
+
+              {isStudent ? (
+                <>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <Label htmlFor="university">University *</Label>
+                      <Select value={university} onValueChange={setUniversity}>
+                        <SelectTrigger><SelectValue placeholder="Select university" /></SelectTrigger>
+                        <SelectContent>
+                          {universities.map(u => (
+                            <SelectItem key={u.id} value={u.name}>{u.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="yearOfStudy">Year of Study *</Label>
+                      <Select value={yearOfStudy} onValueChange={setYearOfStudy}>
+                        <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
+                        <SelectContent>
+                          {['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate'].map(y => (
+                            <SelectItem key={y} value={y}>{y}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <Label htmlFor="qualification">Qualification / Background *</Label>
+                  <Input
+                    id="qualification"
+                    value={qualification}
+                    onChange={e => setQualification(e.target.value)}
+                    placeholder="e.g. BSc Mathematics, CPA, Professional Engineer"
+                    required
+                  />
+                  <p className="mt-1 text-xs text-muted-foreground">Describe your educational background or professional qualification</p>
+                </div>
+              )}
             </div>
           )}
 
