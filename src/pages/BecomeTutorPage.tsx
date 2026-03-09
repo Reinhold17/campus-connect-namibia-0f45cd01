@@ -47,8 +47,10 @@ export default function BecomeTutorPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [isStudent, setIsStudent] = useState(true);
   const [university, setUniversity] = useState('');
   const [yearOfStudy, setYearOfStudy] = useState('');
+  const [qualification, setQualification] = useState('');
 
   // Step 2: Subjects & Rate
   const [hourlyRate, setHourlyRate] = useState('');
