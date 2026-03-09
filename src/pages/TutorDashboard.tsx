@@ -255,10 +255,10 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   const [subject, setSubject] = useState('');
   const [type, setType] = useState('group');
   const [price, setPrice] = useState('');
-  const [location, setLocation] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [maxStudents, setMaxStudents] = useState('10');
+  const [sessionUrl, setSessionUrl] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
 
   const createMutation = useMutation({
@@ -268,7 +268,7 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         subject,
         type,
         price: parseFloat(price),
-        location,
+        location: sessionUrl || '',
         date,
         time,
         max_students: type === 'one-on-one' ? 1 : parseInt(maxStudents),
@@ -314,13 +314,14 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         )}
       </div>
       <div>
-        <Label>Location</Label>
-        <Input value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. UNAM Library Room 2" required />
+        <Label className="flex items-center gap-1.5"><LinkIcon className="h-3.5 w-3.5" /> Session Link</Label>
+        <Input value={sessionUrl} onChange={e => setSessionUrl(e.target.value)} placeholder="https://meet.google.com/... or location URL" />
+        <p className="mt-1 text-xs text-muted-foreground">Add a meeting link, Google Maps link, or any URL for the session</p>
       </div>
       <div>
-        <Label>WhatsApp Group Link</Label>
+        <Label className="flex items-center gap-1.5"><LinkIcon className="h-3.5 w-3.5" /> WhatsApp Group Link</Label>
         <Input value={whatsappUrl} onChange={e => setWhatsappUrl(e.target.value)} placeholder="https://chat.whatsapp.com/..." />
-        <p className="mt-1 text-xs text-muted-foreground">Students will see this link after their payment is confirmed</p>
+        <p className="mt-1 text-xs text-muted-foreground">Students will see this after payment is confirmed</p>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
