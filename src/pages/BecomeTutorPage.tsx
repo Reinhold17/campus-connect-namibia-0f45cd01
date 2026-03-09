@@ -161,8 +161,16 @@ export default function BecomeTutorPage() {
   const validateStep = (): boolean => {
     switch (step) {
       case 0: // Basic Info
-        if (!fullName || !email || !phone || !university || !yearOfStudy) {
+        if (!fullName || !email || !phone) {
           toast.error('Please fill in all required fields');
+          return false;
+        }
+        if (isStudent && (!university || !yearOfStudy)) {
+          toast.error('Please fill in university and year of study');
+          return false;
+        }
+        if (!isStudent && !qualification) {
+          toast.error('Please enter your qualification');
           return false;
         }
         return true;
