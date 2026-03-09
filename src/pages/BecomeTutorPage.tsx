@@ -781,10 +781,12 @@ export default function BecomeTutorPage() {
                     <ShieldCheck className="h-4 w-4 text-primary" /> Documents
                   </h3>
                   <div className="grid gap-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <FileCheck className="h-4 w-4 text-success" />
-                      <span>Student ID: {studentIdFile?.name}</span>
-                    </div>
+                    {isStudent && studentIdFile && (
+                      <div className="flex items-center gap-2">
+                        <FileCheck className="h-4 w-4 text-success" />
+                        <span>Student ID: {studentIdFile.name}</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <FileCheck className="h-4 w-4 text-success" />
                       <span>Government ID: {governmentIdFile?.name}</span>
