@@ -3,12 +3,13 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/integrations/supabase/client';
-import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles, TrendingUp, DollarSign, BookOpen } from 'lucide-react';
+import { CalendarPlus, Calendar, Users, Star, Bell, User, Loader2, Sparkles, TrendingUp, DollarSign, BookOpen, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { TutorPhotoUpload } from '@/components/TutorPhotoUpload';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
