@@ -743,8 +743,14 @@ export default function BecomeTutorPage() {
                     <div className="flex justify-between"><span className="text-muted-foreground">Name:</span><span>{fullName}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Email:</span><span>{email}</span></div>
                     <div className="flex justify-between"><span className="text-muted-foreground">Phone:</span><span>{phone}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">University:</span><span>{university}</span></div>
-                    <div className="flex justify-between"><span className="text-muted-foreground">Year:</span><span>{yearOfStudy}</span></div>
+                    {isStudent ? (
+                      <>
+                        <div className="flex justify-between"><span className="text-muted-foreground">University:</span><span>{university}</span></div>
+                        <div className="flex justify-between"><span className="text-muted-foreground">Year:</span><span>{yearOfStudy}</span></div>
+                      </>
+                    ) : (
+                      <div className="flex justify-between"><span className="text-muted-foreground">Qualification:</span><span>{qualification}</span></div>
+                    )}
                   </div>
                 </div>
 
