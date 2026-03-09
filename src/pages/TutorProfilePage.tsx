@@ -121,9 +121,20 @@ export default function TutorProfilePage() {
         {/* Profile header */}
         <div className="rounded-xl border bg-card p-6 shadow-card md:p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start">
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary font-display text-2xl font-bold text-primary-foreground">
-              {initials}
-            </div>
+            {tutorPhotos.length > 0 ? (
+              <div className="shrink-0">
+                <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-primary">
+                  <img src={tutorPhotos[0].photo_url} alt={tutor.name} className="h-full w-full object-cover" />
+                </div>
+                <div className="mt-2">
+                  <TutorPhotoGallery photos={tutorPhotos} tutorName={tutor.name} />
+                </div>
+              </div>
+            ) : (
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary font-display text-2xl font-bold text-primary-foreground">
+                {initials}
+              </div>
+            )}
             <div className="flex-1">
               <h1 className="font-display text-2xl font-bold md:text-3xl">
                 {tutor.name}
