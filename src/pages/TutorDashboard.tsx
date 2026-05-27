@@ -59,6 +59,26 @@ export default function TutorDashboard() {
   const queryClient = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
 
+  const { data: tutorModules = [] } = useQuery({
+    queryKey: ['tutor-registered-modules', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tutor_modules')
+        .select('module_id, modules!tutor_modules_module_id_fkey ( id, name )')
+        .eq('user_id', user!.id)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+
+      const unique = new Map<string, { id: string; name: string }>();
+      data.forEach((item: any) => {
+        const module = item.modules;
+        if (module?.id && module?.name) unique.set(module.id, { id: module.id, name: module.name });
+      });
+      return Array.from(unique.values()).sort((a, b) => a.name.localeCompare(b.name));
+    },
+    enabled: !!user,
+  });
+
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: ['tutor-my-sessions', user?.id],
     queryFn: async () => {
@@ -185,9 +205,11 @@ export default function TutorDashboard() {
                 <CreateSessionForm
                   tutorId={user!.id}
                   canOffer1on1={(profile?.rating || 0) >= 4.5}
+                  tutorModules={tutorModules}
                   onCreated={() => {
                     setCreateOpen(false);
                     queryClient.invalidateQueries({ queryKey: ['tutor-my-sessions'] });
+                    queryClient.invalidateQueries({ queryKey: ['tutor-registered-modules'] });
                   }}
                 />
               </DialogContent>
