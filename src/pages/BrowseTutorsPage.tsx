@@ -99,7 +99,8 @@ export default function BrowseTutorsPage() {
       const q = search.toLowerCase();
       list = list.filter(t =>
         t.name.toLowerCase().includes(q) ||
-        t.subjects?.some(s => s.toLowerCase().includes(q))
+        t.subjects?.some(s => s.toLowerCase().includes(q)) ||
+        tutorSubjectMap[t.user_id]?.some(s => s.toLowerCase().includes(q))
       );
     }
 
@@ -118,7 +119,7 @@ export default function BrowseTutorsPage() {
     else if (sortBy === 'reviews') list = [...list].sort((a, b) => (b.review_count || 0) - (a.review_count || 0));
 
     return list;
-  }, [search, universityId, facultyId, moduleId, sortBy, tutors, tutorModuleMap, faculties, modules]);
+  }, [search, universityId, facultyId, moduleId, sortBy, tutors, tutorModuleMap, tutorSubjectMap, faculties, modules]);
 
   // Map tutor profile to TutorCard-compatible shape
   const toUser = (t: TutorProfile) => ({
@@ -128,7 +129,7 @@ export default function BrowseTutorsPage() {
     role: 'tutor' as const,
     status: t.status as 'approved',
     university: t.university,
-    subjects: t.subjects,
+    subjects: tutorSubjectMap[t.user_id]?.length ? tutorSubjectMap[t.user_id] : t.subjects,
     bio: t.bio,
     rating: t.rating ? Number(t.rating) : undefined,
     reviewCount: t.review_count ?? undefined,
