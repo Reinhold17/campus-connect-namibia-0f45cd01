@@ -243,9 +243,9 @@ export default function TutorProfilePage() {
                 <CirclePhotoSlider photos={tutorPhotos} name={tutor.name} initials={initials} />
 
                 {/* Subjects as tagline */}
-                {tutor.subjects && tutor.subjects.length > 0 && (
+                {subjectNames.length > 0 && (
                   <p className="mt-4 text-center text-sm font-medium text-muted-foreground leading-snug">
-                    {tutor.subjects.join(', ')}
+                    {subjectNames.join(', ')}
                   </p>
                 )}
 
@@ -328,8 +328,8 @@ export default function TutorProfilePage() {
                 </button>
               </div>
               <h3 className="font-display text-lg font-bold text-foreground">
-                {tutor.subjects && tutor.subjects.length > 0
-                  ? `Excellent ${tutor.subjects[0]} Tutor`
+                {subjectNames.length > 0
+                  ? `Excellent ${subjectNames[0]} Tutor`
                   : `Excellent Tutor on Campus Connect`
                 }
               </h3>
@@ -374,10 +374,10 @@ export default function TutorProfilePage() {
                   </div>
                 </AboutRow>
 
-                {tutor.subjects && tutor.subjects.length > 0 && (
+                {subjectNames.length > 0 && (
                   <AboutRow label="Subjects">
                     <div className="flex flex-wrap gap-1.5">
-                      {tutor.subjects.map((s: string) => (
+                      {subjectNames.map((s: string) => (
                         <Badge key={s} variant="secondary" className="rounded-md px-2.5 py-0.5 text-xs font-medium">
                           {s}
                         </Badge>
