@@ -27,16 +27,18 @@ export default function BrowseTutorsPage() {
   const [modules, setModules] = useState<Module[]>([]);
   const [tutors, setTutors] = useState<TutorProfile[]>([]);
   const [tutorModuleMap, setTutorModuleMap] = useState<Record<string, string[]>>({});
+  const [tutorSubjectMap, setTutorSubjectMap] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [uniRes, facRes, modRes, tutorRolesRes, tmRes] = await Promise.all([
+      const [uniRes, facRes, modRes, tutorRolesRes, tmRes, sessionRes] = await Promise.all([
         supabase.from('universities').select('*').order('name'),
         supabase.from('faculties').select('*').order('name'),
         supabase.from('modules').select('*').order('name'),
         supabase.from('user_roles').select('user_id').eq('role', 'tutor'),
-        supabase.from('tutor_modules').select('user_id, module_id'),
+        supabase.from('tutor_modules').select('user_id, module_id, modules!tutor_modules_module_id_fkey ( name )'),
+        supabase.from('sessions').select('tutor_id, subject, module_id').eq('status', 'active').gte('date', new Date().toISOString().split('T')[0]),
       ]);
       setUniversities(uniRes.data || []);
       setFaculties(facRes.data || []);
@@ -56,11 +58,21 @@ export default function BrowseTutorsPage() {
       }
 
       const map: Record<string, string[]> = {};
+      const subjects: Record<string, Set<string>> = {};
       (tmRes.data || []).forEach((tm: any) => {
         if (!map[tm.user_id]) map[tm.user_id] = [];
         map[tm.user_id].push(tm.module_id);
+        if (!subjects[tm.user_id]) subjects[tm.user_id] = new Set();
+        if (tm.modules?.name) subjects[tm.user_id].add(tm.modules.name);
+      });
+      (sessionRes.data || []).forEach((session: any) => {
+        if (!map[session.tutor_id]) map[session.tutor_id] = [];
+        if (session.module_id) map[session.tutor_id].push(session.module_id);
+        if (!subjects[session.tutor_id]) subjects[session.tutor_id] = new Set();
+        if (session.subject) subjects[session.tutor_id].add(session.subject);
       });
       setTutorModuleMap(map);
+      setTutorSubjectMap(Object.fromEntries(Object.entries(subjects).map(([userId, names]) => [userId, Array.from(names).sort()])));
       setLoading(false);
     };
     fetchData();
