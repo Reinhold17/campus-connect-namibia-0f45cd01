@@ -141,6 +141,19 @@ export default function TutorProfilePage() {
     enabled: !!id,
   });
 
+  const { data: tutorModules = [] } = useQuery({
+    queryKey: ['tutor-profile-modules', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tutor_modules')
+        .select('modules!tutor_modules_module_id_fkey ( name )')
+        .eq('user_id', id!);
+      if (error) throw error;
+      return (data || []).map((item: any) => item.modules?.name).filter(Boolean) as string[];
+    },
+    enabled: !!id,
+  });
+
   const { data: bookingCounts = {} } = useQuery({
     queryKey: ['session-booking-counts', id],
     queryFn: async () => {
@@ -209,6 +222,11 @@ export default function TutorProfilePage() {
   const verified = isTutorVerified(tutor);
   const firstName = tutor.name.split(' ')[0];
   const lastInitial = tutor.name.split(' ').length > 1 ? ` ${tutor.name.split(' ').slice(-1)[0][0]}.` : '';
+  const subjectNames = Array.from(new Set([
+    ...(tutor.subjects || []),
+    ...tutorModules,
+    ...sessions.map((session: any) => session.module?.name || session.subject).filter(Boolean),
+  ])).sort();
 
   return (
     <div className="min-h-screen bg-background">
