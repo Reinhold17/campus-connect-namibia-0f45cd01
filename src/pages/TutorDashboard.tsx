@@ -273,8 +273,9 @@ export default function TutorDashboard() {
   );
 }
 
-function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: string; canOffer1on1: boolean; onCreated: () => void }) {
+function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, onCreated }: { tutorId: string; canOffer1on1: boolean; tutorModules: { id: string; name: string }[]; onCreated: () => void }) {
   const [subject, setSubject] = useState('');
+  const [moduleChoice, setModuleChoice] = useState('custom');
   const [type, setType] = useState('group');
   const [price, setPrice] = useState('');
   const [date, setDate] = useState('');
@@ -282,12 +283,16 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   const [maxStudents, setMaxStudents] = useState('10');
   const [sessionUrl, setSessionUrl] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
+  const selectedModule = tutorModules.find(module => module.id === moduleChoice);
+  const sessionSubject = selectedModule?.name || subject.trim();
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      if (!sessionSubject) throw new Error('Please choose or enter a module for this session');
       const { error } = await supabase.from('sessions').insert({
         tutor_id: tutorId,
-        subject,
+        subject: sessionSubject,
+        module_id: selectedModule?.id || null,
         type,
         price: parseFloat(price),
         location: sessionUrl || '',
@@ -297,6 +302,20 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         whatsapp_group_url: whatsappUrl || null,
       } as any);
       if (error) throw error;
+
+      await supabase.rpc('noop' as any).throwOnError?.();
+
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('subjects')
+        .eq('user_id', tutorId)
+        .single();
+      const subjects = Array.from(new Set([...(currentProfile?.subjects || []), sessionSubject]));
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ subjects })
+        .eq('user_id', tutorId);
+      if (profileError) throw profileError;
     },
     onSuccess: () => {
       toast.success('Session created!');
