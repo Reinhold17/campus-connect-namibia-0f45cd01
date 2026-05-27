@@ -59,6 +59,26 @@ export default function TutorDashboard() {
   const queryClient = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
 
+  const { data: tutorModules = [] } = useQuery({
+    queryKey: ['tutor-registered-modules', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tutor_modules')
+        .select('module_id, modules!tutor_modules_module_id_fkey ( id, name )')
+        .eq('user_id', user!.id)
+        .order('created_at', { ascending: true });
+      if (error) throw error;
+
+      const unique = new Map<string, { id: string; name: string }>();
+      data.forEach((item: any) => {
+        const module = item.modules;
+        if (module?.id && module?.name) unique.set(module.id, { id: module.id, name: module.name });
+      });
+      return Array.from(unique.values()).sort((a, b) => a.name.localeCompare(b.name));
+    },
+    enabled: !!user,
+  });
+
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: ['tutor-my-sessions', user?.id],
     queryFn: async () => {
@@ -185,9 +205,12 @@ export default function TutorDashboard() {
                 <CreateSessionForm
                   tutorId={user!.id}
                   canOffer1on1={(profile?.rating || 0) >= 4.5}
+                  tutorModules={tutorModules}
+                  profileSubjects={profile?.subjects || []}
                   onCreated={() => {
                     setCreateOpen(false);
                     queryClient.invalidateQueries({ queryKey: ['tutor-my-sessions'] });
+                    queryClient.invalidateQueries({ queryKey: ['tutor-registered-modules'] });
                   }}
                 />
               </DialogContent>
@@ -251,8 +274,9 @@ export default function TutorDashboard() {
   );
 }
 
-function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: string; canOffer1on1: boolean; onCreated: () => void }) {
+function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, profileSubjects, onCreated }: { tutorId: string; canOffer1on1: boolean; tutorModules: { id: string; name: string }[]; profileSubjects: string[]; onCreated: () => void }) {
   const [subject, setSubject] = useState('');
+  const [moduleChoice, setModuleChoice] = useState('custom');
   const [type, setType] = useState('group');
   const [price, setPrice] = useState('');
   const [date, setDate] = useState('');
@@ -260,12 +284,21 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   const [maxStudents, setMaxStudents] = useState('10');
   const [sessionUrl, setSessionUrl] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
+  const moduleOptions = [
+    ...tutorModules.map(module => ({ value: module.id, label: module.name, moduleId: module.id })),
+    ...profileSubjects.map(name => ({ value: `subject:${name}`, label: name, moduleId: null })),
+  ].filter((option, index, all) => all.findIndex(item => item.label.toLowerCase() === option.label.toLowerCase()) === index);
+  const selectedOption = moduleOptions.find(option => option.value === moduleChoice);
+  const selectedModule = selectedOption?.moduleId ? tutorModules.find(module => module.id === selectedOption.moduleId) : undefined;
+  const sessionSubject = selectedOption?.label || subject.trim();
 
   const createMutation = useMutation({
     mutationFn: async () => {
+      if (!sessionSubject) throw new Error('Please choose or enter a module for this session');
       const { error } = await supabase.from('sessions').insert({
         tutor_id: tutorId,
-        subject,
+        subject: sessionSubject,
+        module_id: selectedModule?.id || null,
         type,
         price: parseFloat(price),
         location: sessionUrl || '',
@@ -275,6 +308,18 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
         whatsapp_group_url: whatsappUrl || null,
       } as any);
       if (error) throw error;
+
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('subjects')
+        .eq('user_id', tutorId)
+        .single();
+      const subjects = Array.from(new Set([...(currentProfile?.subjects || []), sessionSubject]));
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ subjects })
+        .eq('user_id', tutorId);
+      if (profileError) throw profileError;
     },
     onSuccess: () => {
       toast.success('Session created!');
@@ -286,8 +331,20 @@ function CreateSessionForm({ tutorId, canOffer1on1, onCreated }: { tutorId: stri
   return (
     <form onSubmit={(e) => { e.preventDefault(); createMutation.mutate(); }} className="space-y-4">
       <div>
-        <Label>Subject</Label>
-        <Input value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Financial Accounting 1" required />
+        <Label>Module / Subject</Label>
+        <Select value={moduleChoice} onValueChange={setModuleChoice}>
+          <SelectTrigger><SelectValue placeholder="Choose a module" /></SelectTrigger>
+          <SelectContent>
+            {moduleOptions.map(module => (
+              <SelectItem key={module.value} value={module.value}>{module.label}</SelectItem>
+            ))}
+            <SelectItem value="custom">Add another subject</SelectItem>
+          </SelectContent>
+        </Select>
+        {moduleChoice === 'custom' && (
+          <Input className="mt-2" value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Discrete Math or CWIE" required />
+        )}
+        <p className="mt-1 text-xs text-muted-foreground">Registered modules appear first; new subjects are added to your profile after creating a session.</p>
       </div>
       <div>
         <Label>Session Type</Label>

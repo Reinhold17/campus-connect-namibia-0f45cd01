@@ -141,6 +141,19 @@ export default function TutorProfilePage() {
     enabled: !!id,
   });
 
+  const { data: tutorModules = [] } = useQuery({
+    queryKey: ['tutor-profile-modules', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tutor_modules')
+        .select('modules!tutor_modules_module_id_fkey ( name )')
+        .eq('user_id', id!);
+      if (error) throw error;
+      return (data || []).map((item: any) => item.modules?.name).filter(Boolean) as string[];
+    },
+    enabled: !!id,
+  });
+
   const { data: bookingCounts = {} } = useQuery({
     queryKey: ['session-booking-counts', id],
     queryFn: async () => {
@@ -209,6 +222,11 @@ export default function TutorProfilePage() {
   const verified = isTutorVerified(tutor);
   const firstName = tutor.name.split(' ')[0];
   const lastInitial = tutor.name.split(' ').length > 1 ? ` ${tutor.name.split(' ').slice(-1)[0][0]}.` : '';
+  const subjectNames = Array.from(new Set([
+    ...(tutor.subjects || []),
+    ...tutorModules,
+    ...sessions.map((session: any) => session.module?.name || session.subject).filter(Boolean),
+  ])).sort();
 
   return (
     <div className="min-h-screen bg-background">
@@ -225,9 +243,9 @@ export default function TutorProfilePage() {
                 <CirclePhotoSlider photos={tutorPhotos} name={tutor.name} initials={initials} />
 
                 {/* Subjects as tagline */}
-                {tutor.subjects && tutor.subjects.length > 0 && (
+                {subjectNames.length > 0 && (
                   <p className="mt-4 text-center text-sm font-medium text-muted-foreground leading-snug">
-                    {tutor.subjects.join(', ')}
+                    {subjectNames.join(', ')}
                   </p>
                 )}
 
@@ -310,8 +328,8 @@ export default function TutorProfilePage() {
                 </button>
               </div>
               <h3 className="font-display text-lg font-bold text-foreground">
-                {tutor.subjects && tutor.subjects.length > 0
-                  ? `Excellent ${tutor.subjects[0]} Tutor`
+                {subjectNames.length > 0
+                  ? `Excellent ${subjectNames[0]} Tutor`
                   : `Excellent Tutor on Campus Connect`
                 }
               </h3>
@@ -356,10 +374,10 @@ export default function TutorProfilePage() {
                   </div>
                 </AboutRow>
 
-                {tutor.subjects && tutor.subjects.length > 0 && (
+                {subjectNames.length > 0 && (
                   <AboutRow label="Subjects">
                     <div className="flex flex-wrap gap-1.5">
-                      {tutor.subjects.map((s: string) => (
+                      {subjectNames.map((s: string) => (
                         <Badge key={s} variant="secondary" className="rounded-md px-2.5 py-0.5 text-xs font-medium">
                           {s}
                         </Badge>
