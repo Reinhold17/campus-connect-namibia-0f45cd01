@@ -206,6 +206,7 @@ export default function TutorDashboard() {
                   tutorId={user!.id}
                   canOffer1on1={(profile?.rating || 0) >= 4.5}
                   tutorModules={tutorModules}
+                  profileSubjects={profile?.subjects || []}
                   onCreated={() => {
                     setCreateOpen(false);
                     queryClient.invalidateQueries({ queryKey: ['tutor-my-sessions'] });
@@ -273,7 +274,7 @@ export default function TutorDashboard() {
   );
 }
 
-function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, onCreated }: { tutorId: string; canOffer1on1: boolean; tutorModules: { id: string; name: string }[]; onCreated: () => void }) {
+function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, profileSubjects, onCreated }: { tutorId: string; canOffer1on1: boolean; tutorModules: { id: string; name: string }[]; profileSubjects: string[]; onCreated: () => void }) {
   const [subject, setSubject] = useState('');
   const [moduleChoice, setModuleChoice] = useState('custom');
   const [type, setType] = useState('group');
@@ -283,8 +284,13 @@ function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, onCreated }: {
   const [maxStudents, setMaxStudents] = useState('10');
   const [sessionUrl, setSessionUrl] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
-  const selectedModule = tutorModules.find(module => module.id === moduleChoice);
-  const sessionSubject = selectedModule?.name || subject.trim();
+  const moduleOptions = [
+    ...tutorModules.map(module => ({ value: module.id, label: module.name, moduleId: module.id })),
+    ...profileSubjects.map(name => ({ value: `subject:${name}`, label: name, moduleId: null })),
+  ].filter((option, index, all) => all.findIndex(item => item.label.toLowerCase() === option.label.toLowerCase()) === index);
+  const selectedOption = moduleOptions.find(option => option.value === moduleChoice);
+  const selectedModule = selectedOption?.moduleId ? tutorModules.find(module => module.id === selectedOption.moduleId) : undefined;
+  const sessionSubject = selectedOption?.label || subject.trim();
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -302,8 +308,6 @@ function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, onCreated }: {
         whatsapp_group_url: whatsappUrl || null,
       } as any);
       if (error) throw error;
-
-      await supabase.rpc('noop' as any).throwOnError?.();
 
       const { data: currentProfile } = await supabase
         .from('profiles')
