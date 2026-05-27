@@ -331,8 +331,20 @@ function CreateSessionForm({ tutorId, canOffer1on1, tutorModules, profileSubject
   return (
     <form onSubmit={(e) => { e.preventDefault(); createMutation.mutate(); }} className="space-y-4">
       <div>
-        <Label>Subject</Label>
-        <Input value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Financial Accounting 1" required />
+        <Label>Module / Subject</Label>
+        <Select value={moduleChoice} onValueChange={setModuleChoice}>
+          <SelectTrigger><SelectValue placeholder="Choose a module" /></SelectTrigger>
+          <SelectContent>
+            {moduleOptions.map(module => (
+              <SelectItem key={module.value} value={module.value}>{module.label}</SelectItem>
+            ))}
+            <SelectItem value="custom">Add another subject</SelectItem>
+          </SelectContent>
+        </Select>
+        {moduleChoice === 'custom' && (
+          <Input className="mt-2" value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Discrete Math or CWIE" required />
+        )}
+        <p className="mt-1 text-xs text-muted-foreground">Registered modules appear first; new subjects are added to your profile after creating a session.</p>
       </div>
       <div>
         <Label>Session Type</Label>
