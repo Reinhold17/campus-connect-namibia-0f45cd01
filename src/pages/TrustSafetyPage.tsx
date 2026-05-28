@@ -59,8 +59,8 @@ export default function TrustSafetyPage() {
           </p>
           <p className="text-sm text-muted-foreground">
             Questions or concerns? Contact us at{' '}
-            <a href="mailto:support@campusconnect.com" className="text-primary hover:underline">
-              support@campusconnect.com
+            <a href="mailto:support@campushq.na" className="text-primary hover:underline">
+              support@campushq.na
             </a>
           </p>
         </div>

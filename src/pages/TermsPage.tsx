@@ -85,7 +85,7 @@ export default function TermsPage() {
         <Section title="10. Contact">
           <p>If you have any questions regarding these Terms, please contact:</p>
           <p className="font-semibold">Campus HQ Support</p>
-          <p>support@campusconnect.com</p>
+          <p>support@campushq.na</p>
         </Section>
       </div>
       <Footer />

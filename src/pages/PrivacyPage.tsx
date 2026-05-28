@@ -66,7 +66,7 @@ export default function PrivacyPage() {
         <Section title="8. Contact">
           <p>For questions about this Privacy Policy, please contact:</p>
           <p className="font-semibold">Campus HQ Support</p>
-          <p>support@campusconnect.com</p>
+          <p>support@campushq.na</p>
         </Section>
       </div>
       <Footer />
