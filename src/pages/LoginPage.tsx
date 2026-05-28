@@ -40,7 +40,7 @@ export default function LoginPage() {
               <GraduationCap className="h-7 w-7 text-primary-foreground" />
             </div>
             <h1 className="font-display text-2xl font-bold">Welcome Back</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Sign in to your Campus Connect account</p>
+            <p className="mt-1 text-sm text-muted-foreground">Sign in to your Campus HQ account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border bg-card p-6 shadow-card">

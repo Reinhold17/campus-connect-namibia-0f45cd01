@@ -505,7 +505,7 @@ export default function BecomeTutorPage() {
                   <div className="mt-2 rounded-lg border bg-success/10 p-3 text-sm">
                     <p className="font-medium text-success">Your Earnings: N${tutorEarnings}/hour</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Campus Connect takes a 25% platform commission. You receive 75% of each session payment.
+                      Campus HQ takes a 25% platform commission. You receive 75% of each session payment.
                     </p>
                   </div>
                 )}
@@ -846,7 +846,7 @@ export default function BecomeTutorPage() {
                   />
                   <div className="flex-1">
                     <label htmlFor="termsAccepted" className="font-medium cursor-pointer">
-                      I agree to the Campus Connect Tutor Agreement and Terms of Service *
+                      I agree to the Campus HQ Tutor Agreement and Terms of Service *
                     </label>
                     <p className="text-xs text-muted-foreground mt-1">
                       I have read and agree to the <Link to="/terms" className="text-primary underline" target="_blank">Terms of Service</Link> and <Link to="/privacy" className="text-primary underline" target="_blank">Privacy Policy</Link>.
@@ -866,7 +866,7 @@ export default function BecomeTutorPage() {
                       I understand the tutoring contract terms and platform policies *
                     </label>
                     <p className="text-xs text-muted-foreground mt-1">
-                      I understand that Campus Connect takes a 25% platform commission, I will receive 75% of session payments, and I must be approved by an administrator before my profile becomes visible to students.
+                      I understand that Campus HQ takes a 25% platform commission, I will receive 75% of session payments, and I must be approved by an administrator before my profile becomes visible to students.
                     </p>
                   </div>
                 </div>

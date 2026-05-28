@@ -36,7 +36,7 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary">
           <GraduationCap className="h-4 w-4 text-sidebar-primary-foreground" />
         </div>
-        <span className="font-display text-sm font-bold text-sidebar-foreground">Campus Connect</span>
+        <span className="font-display text-sm font-bold text-sidebar-foreground">Campus HQ</span>
       </div>
 
       <nav className="flex-1 space-y-1 p-2">
@@ -108,7 +108,7 @@ export function DashboardLayout({ children, title, items }: DashboardLayoutProps
             <GraduationCap className="h-4 w-4 text-sidebar-primary-foreground" />
           </div>
           {!collapsed && (
-            <span className="font-display text-sm font-bold text-sidebar-foreground">Campus Connect</span>
+            <span className="font-display text-sm font-bold text-sidebar-foreground">Campus HQ</span>
           )}
         </div>
 

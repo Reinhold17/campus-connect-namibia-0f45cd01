@@ -19,7 +19,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: `
       <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         <div style="background: linear-gradient(135deg, #1a3a6b, #1e2d4d); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">
-          <h1 style="margin: 0; font-size: 24px;">Campus Connect</h1>
+          <h1 style="margin: 0; font-size: 24px;">Campus HQ</h1>
         </div>
         <h2 style="color: #1a3a6b; margin-top: 0;">Booking Confirmed! 🎉</h2>
         <p style="color: #555;">Your session has been booked successfully.</p>
@@ -30,7 +30,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
           <tr><td style="padding: 12px; font-weight: bold;">Time</td><td style="padding: 12px;">${d.time}</td></tr>
         </table>
         <p style="color: #555;">Don't forget to upload your payment proof in the dashboard.</p>
-        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus Connect Team</p>
+        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus HQ Team</p>
       </div>`,
   }),
 
@@ -39,13 +39,13 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: `
       <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         <div style="background: linear-gradient(135deg, #1a3a6b, #1e2d4d); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">
-          <h1 style="margin: 0; font-size: 24px;">Campus Connect</h1>
+          <h1 style="margin: 0; font-size: 24px;">Campus HQ</h1>
         </div>
         <h2 style="color: #1a3a6b;">Payment ${d.paymentStatus === "confirmed" ? "Confirmed ✅" : d.paymentStatus === "rejected" ? "Rejected ❌" : "Updated"}</h2>
         <p style="color: #555;">Your payment for <strong>${d.subject}</strong> has been <strong>${d.paymentStatus}</strong>.</p>
         ${d.paymentStatus === "confirmed" ? '<p style="color: #22c55e; font-weight: bold;">You now have access to the WhatsApp study group!</p>' : ""}
         ${d.paymentStatus === "rejected" ? '<p style="color: #ef4444;">Please re-upload a valid payment proof in your dashboard.</p>' : ""}
-        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus Connect Team</p>
+        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus HQ Team</p>
       </div>`,
   }),
 
@@ -54,7 +54,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: `
       <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         <div style="background: linear-gradient(135deg, #1a3a6b, #1e2d4d); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">
-          <h1 style="margin: 0; font-size: 24px;">Campus Connect</h1>
+          <h1 style="margin: 0; font-size: 24px;">Campus HQ</h1>
         </div>
         <h2 style="color: #1a3a6b;">Session Reminder ⏰</h2>
         <p style="color: #555;">Your <strong>${d.subject}</strong> session is coming up <strong>${d.when}</strong>.</p>
@@ -63,7 +63,7 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
           <tr><td style="padding: 12px; font-weight: bold; border-bottom: 1px solid #eee;">Time</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${d.time}</td></tr>
           <tr><td style="padding: 12px; font-weight: bold;">Location</td><td style="padding: 12px;">${d.location}</td></tr>
         </table>
-        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus Connect Team</p>
+        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus HQ Team</p>
       </div>`,
   }),
 
@@ -72,14 +72,14 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: `
       <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         <div style="background: linear-gradient(135deg, #1a3a6b, #1e2d4d); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">
-          <h1 style="margin: 0; font-size: 24px;">Campus Connect</h1>
+          <h1 style="margin: 0; font-size: 24px;">Campus HQ</h1>
         </div>
         <h2 style="color: #22c55e;">Congratulations, ${d.name}! 🎉</h2>
         <p style="color: #555;">Your tutor application has been <strong>approved</strong>. You can now log in and start creating tutoring sessions.</p>
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 16px 0;">
           <p style="margin: 0; color: #166534;">Head to your Tutor Dashboard to create your first session and start helping fellow students!</p>
         </div>
-        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus Connect Team</p>
+        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus HQ Team</p>
       </div>`,
   }),
 
@@ -88,13 +88,13 @@ const EMAIL_TEMPLATES: Record<string, (data: any) => { subject: string; html: st
     html: `
       <div style="font-family: 'DM Sans', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         <div style="background: linear-gradient(135deg, #1a3a6b, #1e2d4d); border-radius: 12px; padding: 24px; color: white; margin-bottom: 24px;">
-          <h1 style="margin: 0; font-size: 24px;">Campus Connect</h1>
+          <h1 style="margin: 0; font-size: 24px;">Campus HQ</h1>
         </div>
         <h2 style="color: #1a3a6b;">Application Update</h2>
         <p style="color: #555;">Hi ${d.name}, unfortunately your tutor application was not approved at this time.</p>
         ${d.reason ? `<p style="color: #555;"><strong>Reason:</strong> ${d.reason}</p>` : ""}
         <p style="color: #555;">You're welcome to reapply in the future. Keep studying and growing!</p>
-        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus Connect Team</p>
+        <p style="color: #999; font-size: 12px; margin-top: 24px;">— Campus HQ Team</p>
       </div>`,
   }),
 };
@@ -138,7 +138,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Campus Connect <onboarding@resend.dev>",
+        from: "Campus HQ <onboarding@resend.dev>",
         to: [profile.email],
         subject,
         html,

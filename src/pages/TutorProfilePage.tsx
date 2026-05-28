@@ -330,7 +330,7 @@ export default function TutorProfilePage() {
               <h3 className="font-display text-lg font-bold text-foreground">
                 {subjectNames.length > 0
                   ? `Excellent ${subjectNames[0]} Tutor`
-                  : `Excellent Tutor on Campus Connect`
+                  : `Excellent Tutor on Campus HQ`
                 }
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">— Student Review</p>
@@ -396,7 +396,7 @@ export default function TutorProfilePage() {
               <div className="space-y-3 text-sm text-muted-foreground">
                 <div className="flex items-start gap-2.5">
                   <Lock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span>Payments are securely handled by Campus Connect</span>
+                  <span>Payments are securely handled by Campus HQ</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />

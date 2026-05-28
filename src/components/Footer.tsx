@@ -11,7 +11,7 @@ export function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
                 <GraduationCap className="h-4 w-4 text-accent-foreground" />
               </div>
-              <span className="font-display text-lg font-bold">Campus Connect</span>
+              <span className="font-display text-lg font-bold">Campus HQ</span>
             </div>
             <p className="text-sm text-primary-foreground/70">
               Connecting Namibian students with verified tutors for in-person academic excellence.
@@ -49,14 +49,14 @@ export function Footer() {
 
             <h4 className="mb-2 mt-6 font-body text-sm font-semibold uppercase tracking-wider text-primary-foreground/50">Contact</h4>
             <ul className="space-y-1 text-sm text-primary-foreground/70">
-              <li>info@campusconnect.na</li>
+              <li>info@campushq.na</li>
               <li>Windhoek, Namibia</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 border-t border-primary-foreground/10 pt-6 text-center text-sm text-primary-foreground/50">
-          © {new Date().getFullYear()} Campus Connect Namibia. All rights reserved.
+          © {new Date().getFullYear()} Campus HQ. All rights reserved.
         </div>
       </div>
     </footer>
