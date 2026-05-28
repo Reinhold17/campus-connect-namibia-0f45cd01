@@ -268,7 +268,7 @@ export default function PaymentPage() {
 
             <div className="rounded-lg bg-muted/50 p-4 space-y-3">
               <BankDetailRow label="Bank Name" value="Bank Windhoek" onCopy={copyToClipboard} />
-              <BankDetailRow label="Account Name" value="Campus Connect" onCopy={copyToClipboard} />
+              <BankDetailRow label="Account Name" value="Campus HQ" onCopy={copyToClipboard} />
               <BankDetailRow label="Account Number" value="8004064256" onCopy={copyToClipboard} />
               <BankDetailRow label="Branch" value="Windhoek" onCopy={copyToClipboard} />
               <div className="pt-2 border-t">

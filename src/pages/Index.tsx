@@ -125,7 +125,7 @@ const Index = () => {
                     <span className="h-2.5 w-2.5 rounded-full bg-destructive/60" />
                     <span className="h-2.5 w-2.5 rounded-full bg-secondary/70" />
                     <span className="h-2.5 w-2.5 rounded-full bg-success/60" />
-                    <span className="ml-3 text-[11px] font-medium text-muted-foreground">portal.campusconnect.na · Dashboard</span>
+                    <span className="ml-3 text-[11px] font-medium text-muted-foreground">portal.campushq.na · Dashboard</span>
                   </div>
 
                   <div className="grid grid-cols-[140px_1fr] min-h-[380px]">
@@ -135,7 +135,7 @@ const Index = () => {
                         <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
                           <GraduationCap className="h-3.5 w-3.5 text-primary-foreground" />
                         </div>
-                        <span className="text-xs font-bold text-sidebar-foreground">Campus Connect</span>
+                        <span className="text-xs font-bold text-sidebar-foreground">Campus HQ</span>
                       </div>
                       <nav className="space-y-1">
                         {[
@@ -236,7 +236,7 @@ const Index = () => {
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Trust & safety</p>
             <h2 className="mt-3 font-display text-3xl font-bold text-foreground md:text-4xl">
-              Why Namibian students choose Campus Connect
+              Why Namibian students choose Campus HQ
             </h2>
           </div>
 

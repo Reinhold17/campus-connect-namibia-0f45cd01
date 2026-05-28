@@ -8,7 +8,7 @@ export default function TrustSafetyPage() {
     {
       icon: ShieldCheck,
       title: 'Tutor Verification',
-      description: 'Every tutor on Campus Connect goes through a rigorous multi-step verification process. Tutors must submit their academic credentials, including the specific modules they can teach and the grades they achieved. Only after admin review and approval does a tutor become visible to students.',
+      description: 'Every tutor on Campus HQ goes through a rigorous multi-step verification process. Tutors must submit their academic credentials, including the specific modules they can teach and the grades they achieved. Only after admin review and approval does a tutor become visible to students.',
     },
     {
       icon: IdCard,
@@ -23,7 +23,7 @@ export default function TrustSafetyPage() {
     {
       icon: Users,
       title: 'Student Protection',
-      description: 'Campus Connect prioritises student safety. Tutors who violate our code of conduct face immediate suspension. Students can report any concerns directly through the platform, and our admin team reviews all reports promptly.',
+      description: 'Campus HQ prioritises student safety. Tutors who violate our code of conduct face immediate suspension. Students can report any concerns directly through the platform, and our admin team reviews all reports promptly.',
     },
   ];
 
@@ -34,7 +34,7 @@ export default function TrustSafetyPage() {
         <div className="text-center mb-12">
           <h1 className="font-display text-4xl font-bold mb-4">Trust & Safety</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Your safety is our top priority. Here's how Campus Connect protects students and ensures quality tutoring experiences.
+            Your safety is our top priority. Here's how Campus HQ protects students and ensures quality tutoring experiences.
           </p>
         </div>
 
@@ -55,12 +55,12 @@ export default function TrustSafetyPage() {
         <div className="mt-16 rounded-xl border bg-card p-8 text-center">
           <h3 className="font-display text-2xl font-semibold mb-3">Our Commitment</h3>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-4">
-            All personal data submitted to Campus Connect is securely stored and used strictly for verification and platform services. Your information will remain confidential and will not be shared without your permission.
+            All personal data submitted to Campus HQ is securely stored and used strictly for verification and platform services. Your information will remain confidential and will not be shared without your permission.
           </p>
           <p className="text-sm text-muted-foreground">
             Questions or concerns? Contact us at{' '}
-            <a href="mailto:support@campusconnect.com" className="text-primary hover:underline">
-              support@campusconnect.com
+            <a href="mailto:support@campushq.na" className="text-primary hover:underline">
+              support@campushq.na
             </a>
           </p>
         </div>
