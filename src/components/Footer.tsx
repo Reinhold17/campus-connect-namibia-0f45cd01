@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { GraduationCap, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import logo from '@/assets/campus-hq-logo.png';
 
 export function Footer() {
   return (
@@ -8,9 +9,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-                <GraduationCap className="h-4 w-4 text-accent-foreground" />
-              </div>
+              <img src={logo} alt="Campus HQ" className="h-9 w-9 rounded-lg bg-white object-contain p-1" />
               <span className="font-display text-lg font-bold">Campus HQ</span>
             </div>
             <p className="text-sm text-primary-foreground/70">
