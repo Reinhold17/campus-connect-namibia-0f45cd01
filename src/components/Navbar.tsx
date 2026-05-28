@@ -27,11 +27,9 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <GraduationCap className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img src={logo} alt="Campus HQ" className="h-9 w-9 object-contain" />
           <span className="font-display text-lg font-bold text-foreground">
-            Campus HQ <span className="text-accent">Namibia</span>
+            Campus <span className="text-accent">HQ</span>
           </span>
         </Link>
 
