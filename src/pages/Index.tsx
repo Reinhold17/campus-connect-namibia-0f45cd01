@@ -164,7 +164,7 @@ const Index = () => {
                     <div className="space-y-3 p-4">
                       <div>
                         <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Welcome back</p>
-                        <h3 className="font-display text-base font-bold">Good afternoon, Aishe 👋</h3>
+                        <h3 className="font-display text-base font-bold">Good afternoon 👋</h3>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
