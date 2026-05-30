@@ -12,6 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { TutorPhotoUpload } from '@/components/TutorPhotoUpload';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import iconSessions from '@/assets/icon-sessions.png';
+import iconStudents from '@/assets/icon-students.png';
+import iconRating from '@/assets/icon-rating.png';
+import iconEarnings from '@/assets/icon-earnings.png';
 
 const sidebarItems = [
   { label: 'My Sessions', icon: Calendar, to: '/tutor' },
@@ -27,28 +31,28 @@ const statCards = [
   {
     key: 'sessions',
     label: 'Active Sessions',
-    icon: BookOpen,
+    image: iconSessions,
     gradient: 'from-[hsl(217,72%,28%)] to-[hsl(217,60%,42%)]',
     iconBg: 'bg-[hsl(217,72%,28%/0.2)]',
   },
   {
     key: 'students',
     label: 'Total Students',
-    icon: Users,
+    image: iconStudents,
     gradient: 'from-[hsl(142,71%,35%)] to-[hsl(142,60%,45%)]',
     iconBg: 'bg-[hsl(142,71%,35%/0.2)]',
   },
   {
     key: 'rating',
     label: 'Average Rating',
-    icon: Star,
+    image: iconRating,
     gradient: 'from-[hsl(39,90%,55%)] to-[hsl(45,95%,60%)]',
     iconBg: 'bg-[hsl(39,90%,55%/0.2)]',
   },
   {
     key: 'earnings',
     label: 'Total Earnings',
-    icon: DollarSign,
+    image: iconEarnings,
     gradient: 'from-[hsl(270,60%,50%)] to-[hsl(280,70%,60%)]',
     iconBg: 'bg-[hsl(270,60%,50%/0.2)]',
   },
@@ -175,8 +179,8 @@ export default function TutorDashboard() {
                 <div className={`h-full w-full bg-gradient-to-br ${card.gradient} opacity-[0.04]`} />
               </div>
               <div className="relative">
-                <div className={`mb-3 inline-flex rounded-xl bg-gradient-to-br ${card.gradient} p-2.5 text-primary-foreground shadow-md`}>
-                  <card.icon className="h-5 w-5" />
+                <div className="mb-3 inline-flex rounded-xl bg-muted p-2.5 shadow-sm">
+                  <img src={card.image} alt={card.label} className="h-6 w-6 object-contain" />
                 </div>
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{card.label}</p>
                 <p className="mt-1 font-display text-3xl font-bold tracking-tight">{statValues[card.key]}</p>
