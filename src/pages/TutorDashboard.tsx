@@ -246,8 +246,8 @@ export default function TutorDashboard() {
                   style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'backwards' }}
                 >
                   <div className="flex items-start gap-4 min-w-0">
-                    <div className="hidden sm:flex shrink-0 h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary">
-                      <BookOpen className="h-5 w-5" />
+                    <div className="hidden sm:flex shrink-0 h-12 w-12 items-center justify-center rounded-xl bg-muted">
+                      <img src={iconSessions} alt="Session" className="h-7 w-7 object-contain" />
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-display font-bold truncate text-base">{session.subject}</h3>
