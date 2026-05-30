@@ -8,6 +8,7 @@ import {
   BookOpen, Calendar, Users, Bell, TrendingUp, CheckCircle2,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import campusHqLogo from '@/assets/campus-hq-logo.png';
 import { useState } from 'react';
 
 const trendingSubjects = [
@@ -61,7 +62,7 @@ const Index = () => {
             {/* Copy */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="inline-flex items-center gap-2 rounded-full border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                <img src={campusHqLogo} alt="Campus HQ" className="h-4 w-4 object-contain" />
                 Namibia's next-generation student portal
               </div>
 
@@ -132,9 +133,7 @@ const Index = () => {
                     {/* Sidebar */}
                     <aside className="border-r bg-sidebar p-3">
                       <div className="mb-4 flex items-center gap-2 px-1.5">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-                          <GraduationCap className="h-3.5 w-3.5 text-primary-foreground" />
-                        </div>
+                        <img src={campusHqLogo} alt="Campus HQ" className="h-7 w-7 object-contain" />
                         <span className="text-xs font-bold text-sidebar-foreground">Campus HQ</span>
                       </div>
                       <nav className="space-y-1">
