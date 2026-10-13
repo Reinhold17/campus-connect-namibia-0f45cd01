@@ -46,6 +46,7 @@ export default function BrowseTutorsPage() {
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [tutors, setTutors] = useState<TutorProfile[]>([]);
+  const [usingMock, setUsingMock] = useState(false);
   const [tutorModuleMap, setTutorModuleMap] = useState<Record<string, string[]>>({});
   const [tutorSubjectMap, setTutorSubjectMap] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
