@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { mockTutors } from '@/lib/mock-data';
 
 interface University { id: string; name: string; }
 interface Faculty { id: string; name: string; university_id: string; }
@@ -13,7 +14,26 @@ interface Module { id: string; name: string; faculty_id: string; }
 interface TutorProfile {
   id: string; user_id: string; name: string; email: string; university?: string;
   subjects?: string[]; bio?: string; rating?: number; review_count?: number; status: string;
+  hourly_rate?: number; teaching_style?: string;
+  student_id_url?: string | null; government_id_url?: string | null;
 }
+
+const mockToProfile = (m: any): TutorProfile => ({
+  id: m.id,
+  user_id: m.id,
+  name: m.name,
+  email: m.email,
+  university: m.university,
+  subjects: m.subjects,
+  bio: m.bio,
+  rating: m.rating,
+  review_count: m.reviewCount,
+  status: 'approved',
+  hourly_rate: m.hourly_rate,
+  teaching_style: m.teaching_style,
+  student_id_url: m.student_id_url,
+  government_id_url: m.government_id_url,
+});
 
 export default function BrowseTutorsPage() {
   const [search, setSearch] = useState('');
