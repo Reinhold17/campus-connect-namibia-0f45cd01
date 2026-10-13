@@ -128,22 +128,28 @@ export default function BrowseTutorsPage() {
       );
     }
 
-    if (moduleId !== 'all') {
-      list = list.filter(t => tutorModuleMap[t.user_id]?.includes(moduleId));
-    } else if (facultyId !== 'all') {
-      const modIds = modules.filter(m => m.faculty_id === facultyId).map(m => m.id);
-      list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+    if (!usingMock) {
+      if (moduleId !== 'all') {
+        list = list.filter(t => tutorModuleMap[t.user_id]?.includes(moduleId));
+      } else if (facultyId !== 'all') {
+        const modIds = modules.filter(m => m.faculty_id === facultyId).map(m => m.id);
+        list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+      } else if (universityId !== 'all') {
+        const facIds = faculties.filter(f => f.university_id === universityId).map(f => f.id);
+        const modIds = modules.filter(m => facIds.includes(m.faculty_id)).map(m => m.id);
+        list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+      }
     } else if (universityId !== 'all') {
-      const facIds = faculties.filter(f => f.university_id === universityId).map(f => f.id);
-      const modIds = modules.filter(m => facIds.includes(m.faculty_id)).map(m => m.id);
-      list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+      // Mock tutors have no module records — filter by university name instead.
+      const uniName = universities.find(u => u.id === universityId)?.name;
+      if (uniName) list = list.filter(t => t.university === uniName);
     }
 
     if (sortBy === 'rating') list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     else if (sortBy === 'reviews') list = [...list].sort((a, b) => (b.review_count || 0) - (a.review_count || 0));
 
     return list;
-  }, [search, universityId, facultyId, moduleId, sortBy, tutors, tutorModuleMap, tutorSubjectMap, faculties, modules]);
+  }, [search, universityId, facultyId, moduleId, sortBy, tutors, usingMock, tutorModuleMap, tutorSubjectMap, faculties, modules, universities]);
 
   // Map tutor profile to TutorCard-compatible shape
   const toUser = (t: TutorProfile) => ({
