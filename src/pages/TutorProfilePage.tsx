@@ -121,8 +121,27 @@ export default function TutorProfilePage() {
     queryKey: ['tutor-profile', id],
     queryFn: async () => {
       const { data, error } = await supabase.from('profiles').select('*').eq('user_id', id!).single();
-      if (error) throw error;
-      return data;
+      if (!error && data) return data;
+      // Fall back to mock tutors while the platform has no real tutors yet.
+      const mock = mockTutors.find(m => m.id === id);
+      if (mock) {
+        return {
+          user_id: mock.id,
+          name: mock.name,
+          university: mock.university,
+          year_of_study: mock.year_of_study,
+          subjects: mock.subjects,
+          bio: mock.bio,
+          teaching_style: mock.teaching_style,
+          rating: mock.rating,
+          review_count: mock.reviewCount,
+          hourly_rate: mock.hourly_rate,
+          status: mock.status,
+          student_id_url: mock.student_id_url,
+          government_id_url: mock.government_id_url,
+        };
+      }
+      throw error ?? new Error('Tutor not found');
     },
     enabled: !!id,
   });
