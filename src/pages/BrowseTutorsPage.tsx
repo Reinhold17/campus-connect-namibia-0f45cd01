@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { mockTutors } from '@/lib/mock-data';
 
 interface University { id: string; name: string; }
 interface Faculty { id: string; name: string; university_id: string; }
@@ -13,7 +14,26 @@ interface Module { id: string; name: string; faculty_id: string; }
 interface TutorProfile {
   id: string; user_id: string; name: string; email: string; university?: string;
   subjects?: string[]; bio?: string; rating?: number; review_count?: number; status: string;
+  hourly_rate?: number; teaching_style?: string;
+  student_id_url?: string | null; government_id_url?: string | null;
 }
+
+const mockToProfile = (m: any): TutorProfile => ({
+  id: m.id,
+  user_id: m.id,
+  name: m.name,
+  email: m.email,
+  university: m.university,
+  subjects: m.subjects,
+  bio: m.bio,
+  rating: m.rating,
+  review_count: m.reviewCount,
+  status: 'approved',
+  hourly_rate: m.hourly_rate,
+  teaching_style: m.teaching_style,
+  student_id_url: m.student_id_url,
+  government_id_url: m.government_id_url,
+});
 
 export default function BrowseTutorsPage() {
   const [search, setSearch] = useState('');
@@ -26,6 +46,7 @@ export default function BrowseTutorsPage() {
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [tutors, setTutors] = useState<TutorProfile[]>([]);
+  const [usingMock, setUsingMock] = useState(false);
   const [tutorModuleMap, setTutorModuleMap] = useState<Record<string, string[]>>({});
   const [tutorSubjectMap, setTutorSubjectMap] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
@@ -44,18 +65,21 @@ export default function BrowseTutorsPage() {
       setFaculties(facRes.data || []);
       setModules(modRes.data || []);
 
-      // Only fetch profiles for users with tutor role
+      // Only fetch profiles for users with tutor role; fall back to mock tutors
+      // while the platform has no real approved tutors yet.
       const tutorUserIds = (tutorRolesRes.data || []).map((r: any) => r.user_id);
+      let dbTutors: TutorProfile[] = [];
       if (tutorUserIds.length > 0) {
         const { data: tutorProfiles } = await supabase
           .from('profiles')
           .select('*')
           .eq('status', 'approved')
           .in('user_id', tutorUserIds);
-        setTutors(tutorProfiles as TutorProfile[] || []);
-      } else {
-        setTutors([]);
+        dbTutors = (tutorProfiles as TutorProfile[]) || [];
       }
+      const isMock = dbTutors.length === 0;
+      setUsingMock(isMock);
+      setTutors(isMock ? mockTutors.map(mockToProfile) : dbTutors);
 
       const map: Record<string, string[]> = {};
       const subjects: Record<string, Set<string>> = {};
@@ -104,22 +128,28 @@ export default function BrowseTutorsPage() {
       );
     }
 
-    if (moduleId !== 'all') {
-      list = list.filter(t => tutorModuleMap[t.user_id]?.includes(moduleId));
-    } else if (facultyId !== 'all') {
-      const modIds = modules.filter(m => m.faculty_id === facultyId).map(m => m.id);
-      list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+    if (!usingMock) {
+      if (moduleId !== 'all') {
+        list = list.filter(t => tutorModuleMap[t.user_id]?.includes(moduleId));
+      } else if (facultyId !== 'all') {
+        const modIds = modules.filter(m => m.faculty_id === facultyId).map(m => m.id);
+        list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+      } else if (universityId !== 'all') {
+        const facIds = faculties.filter(f => f.university_id === universityId).map(f => f.id);
+        const modIds = modules.filter(m => facIds.includes(m.faculty_id)).map(m => m.id);
+        list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+      }
     } else if (universityId !== 'all') {
-      const facIds = faculties.filter(f => f.university_id === universityId).map(f => f.id);
-      const modIds = modules.filter(m => facIds.includes(m.faculty_id)).map(m => m.id);
-      list = list.filter(t => tutorModuleMap[t.user_id]?.some(id => modIds.includes(id)));
+      // Mock tutors have no module records — filter by university name instead.
+      const uniName = universities.find(u => u.id === universityId)?.name;
+      if (uniName) list = list.filter(t => t.university === uniName);
     }
 
     if (sortBy === 'rating') list = [...list].sort((a, b) => (b.rating || 0) - (a.rating || 0));
     else if (sortBy === 'reviews') list = [...list].sort((a, b) => (b.review_count || 0) - (a.review_count || 0));
 
     return list;
-  }, [search, universityId, facultyId, moduleId, sortBy, tutors, tutorModuleMap, tutorSubjectMap, faculties, modules]);
+  }, [search, universityId, facultyId, moduleId, sortBy, tutors, usingMock, tutorModuleMap, tutorSubjectMap, faculties, modules, universities]);
 
   // Map tutor profile to TutorCard-compatible shape
   const toUser = (t: TutorProfile) => ({
