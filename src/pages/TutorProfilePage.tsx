@@ -12,6 +12,7 @@ import {
   Award, Zap, CreditCard, ArrowRight, Lock, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { isTutorVerified } from '@/components/VerifiedBadge';
+import { mockTutors } from '@/lib/mock-data';
 import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { useState, useRef } from 'react';
