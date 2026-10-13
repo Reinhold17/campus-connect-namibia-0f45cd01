@@ -65,18 +65,21 @@ export default function BrowseTutorsPage() {
       setFaculties(facRes.data || []);
       setModules(modRes.data || []);
 
-      // Only fetch profiles for users with tutor role
+      // Only fetch profiles for users with tutor role; fall back to mock tutors
+      // while the platform has no real approved tutors yet.
       const tutorUserIds = (tutorRolesRes.data || []).map((r: any) => r.user_id);
+      let dbTutors: TutorProfile[] = [];
       if (tutorUserIds.length > 0) {
         const { data: tutorProfiles } = await supabase
           .from('profiles')
           .select('*')
           .eq('status', 'approved')
           .in('user_id', tutorUserIds);
-        setTutors(tutorProfiles as TutorProfile[] || []);
-      } else {
-        setTutors([]);
+        dbTutors = (tutorProfiles as TutorProfile[]) || [];
       }
+      const isMock = dbTutors.length === 0;
+      setUsingMock(isMock);
+      setTutors(isMock ? mockTutors.map(mockToProfile) : dbTutors);
 
       const map: Record<string, string[]> = {};
       const subjects: Record<string, Set<string>> = {};
