@@ -104,7 +104,7 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
 /* ─── About Row ─────────────────────────────────────────── */
 function AboutRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[140px_1fr] gap-4 py-4 border-b border-border last:border-0">
+    <div className="grid grid-cols-1 gap-2 py-4 border-b border-border last:border-0 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-4">
       <span className="text-sm font-medium text-muted-foreground">{label}</span>
       <div className="text-sm text-foreground">{children}</div>
     </div>
@@ -350,7 +350,7 @@ export default function TutorProfilePage() {
               <h3 className="font-display text-lg font-bold text-foreground">
                 {subjectNames.length > 0
                   ? `Excellent ${subjectNames[0]} Tutor`
-                  : `Excellent Tutor on Campus HQ`
+                  : `Excellent Tutor on Campus-CONNECT`
                 }
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">— Student Review</p>
@@ -416,7 +416,7 @@ export default function TutorProfilePage() {
               <div className="space-y-3 text-sm text-muted-foreground">
                 <div className="flex items-start gap-2.5">
                   <Lock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span>Payments are securely handled by Campus HQ</span>
+                  <span>Payments are securely handled by Campus-CONNECT</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <Clock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />

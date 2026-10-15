@@ -26,16 +26,16 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="container mx-auto flex h-16 items-center justify-between gap-2 px-4 safe-top">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Campus HQ" className="h-9 w-9 object-contain" />
-          <span className="font-display text-lg font-bold text-foreground">
-            Campus <span className="text-accent">HQ</span>
+          <img src={logo} alt="Campus-CONNECT" className="h-9 w-9 object-contain" />
+          <span className="font-display text-base font-bold text-foreground lg:text-lg">
+            Campus-<span className="text-primary">CONNECT</span>
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.to}
@@ -47,7 +47,7 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 lg:flex">
           {isAuthenticated ? (
             <>
               <Button variant="ghost" size="sm" onClick={() => navigate(dashboardPath)}>
@@ -70,20 +70,20 @@ export function Navbar() {
         </div>
 
         {/* Mobile hamburger */}
-        <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
+        <Button variant="ghost" size="icon" className="h-11 w-11 shrink-0 lg:hidden" aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={mobileOpen} aria-controls="mobile-navigation" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        </Button>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-t bg-card p-4 md:hidden">
+        <div id="mobile-navigation" className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t bg-card p-4 safe-bottom lg:hidden">
           <div className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                className="flex min-h-11 items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}

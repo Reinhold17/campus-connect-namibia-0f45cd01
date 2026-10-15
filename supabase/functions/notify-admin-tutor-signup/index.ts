@@ -26,13 +26,13 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Campus HQ <onboarding@resend.dev>',
+        from: 'Campus-CONNECT <onboarding@resend.dev>',
         to: [ADMIN_EMAIL],
         subject: `🎓 New Tutor Application: ${tutorName}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <h2 style="color: #1a1a2e;">New Tutor Application</h2>
-            <p>A new tutor has applied on Campus HQ and is awaiting your approval.</p>
+            <p>A new tutor has applied on Campus-CONNECT and is awaiting your approval.</p>
             <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
               <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #eee;">Name</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${tutorName}</td></tr>
               <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #eee;">Email</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${tutorEmail}</td></tr>

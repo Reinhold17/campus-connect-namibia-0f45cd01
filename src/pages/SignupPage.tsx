@@ -51,7 +51,7 @@ export default function SignupPage() {
               <GraduationCap className="h-7 w-7 text-primary-foreground" />
             </div>
             <h1 className="font-display text-2xl font-bold">Create Account</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Join Campus HQ today</p>
+            <p className="mt-1 text-sm text-muted-foreground">Join Campus-CONNECT today</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border bg-card p-6 shadow-card">
