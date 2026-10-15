@@ -57,7 +57,7 @@ const Index = () => {
 
       {/* ── Hero ── */}
       <section className="relative border-b bg-card">
-        <div className="container mx-auto px-4 py-16 lg:py-24">
+        <div className="container mx-auto px-4 py-8 sm:py-16 lg:py-24">
           <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
             {/* Copy */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -75,17 +75,18 @@ const Index = () => {
               </p>
 
               {/* Search */}
-              <form onSubmit={handleSearch} className="mt-7 flex w-full max-w-xl gap-2 rounded-2xl border bg-background p-2 shadow-card">
-                <div className="relative flex-1">
+              <form onSubmit={handleSearch} className="mt-7 flex w-full max-w-xl flex-col gap-2 rounded-2xl border bg-background p-2 shadow-card sm:flex-row">
+                <div className="relative min-w-0 flex-1">
                   <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
+                    aria-label="Search subjects or modules"
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Search subjects — Calculus, Accounting, Physics…"
                     className="h-11 border-0 bg-transparent pl-10 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
                 </div>
-                <Button type="submit" className="h-11 rounded-xl px-5 text-sm">
+                <Button type="submit" className="h-11 shrink-0 rounded-xl px-5 text-sm">
                   Find a Tutor
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>

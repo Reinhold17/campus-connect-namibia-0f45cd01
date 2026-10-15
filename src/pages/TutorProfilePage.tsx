@@ -104,7 +104,7 @@ function ExpandableText({ text, maxLength = 200 }: { text: string; maxLength?: n
 /* ─── About Row ─────────────────────────────────────────── */
 function AboutRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[140px_1fr] gap-4 py-4 border-b border-border last:border-0">
+    <div className="grid grid-cols-1 gap-2 py-4 border-b border-border last:border-0 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-4">
       <span className="text-sm font-medium text-muted-foreground">{label}</span>
       <div className="text-sm text-foreground">{children}</div>
     </div>
