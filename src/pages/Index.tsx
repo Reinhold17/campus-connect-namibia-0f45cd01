@@ -62,7 +62,7 @@ const Index = () => {
             {/* Copy */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="inline-flex items-center gap-2 rounded-full border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                <img src={campusHqLogo} alt="Campus HQ" className="h-4 w-4 object-contain" />
+                <img src={campusHqLogo} alt="Campus-CONNECT" className="h-4 w-4 object-contain" />
                 Namibia's next-generation student portal
               </div>
 
@@ -126,15 +126,15 @@ const Index = () => {
                     <span className="h-2.5 w-2.5 rounded-full bg-destructive/60" />
                     <span className="h-2.5 w-2.5 rounded-full bg-secondary/70" />
                     <span className="h-2.5 w-2.5 rounded-full bg-success/60" />
-                    <span className="ml-3 text-[11px] font-medium text-muted-foreground">portal.campushq.na · Dashboard</span>
+                    <span className="ml-3 text-[11px] font-medium text-muted-foreground">Campus-CONNECT · Dashboard</span>
                   </div>
 
                   <div className="grid grid-cols-[140px_1fr] min-h-[380px]">
                     {/* Sidebar */}
                     <aside className="border-r bg-sidebar p-3">
                       <div className="mb-4 flex items-center gap-2 px-1.5">
-                        <img src={campusHqLogo} alt="Campus HQ" className="h-7 w-7 object-contain" />
-                        <span className="text-xs font-bold text-sidebar-foreground">Campus HQ</span>
+                        <img src={campusHqLogo} alt="Campus-CONNECT" className="h-7 w-7 object-contain" />
+                        <span className="text-xs font-bold text-sidebar-foreground">Campus-CONNECT</span>
                       </div>
                       <nav className="space-y-1">
                         {[
@@ -235,7 +235,7 @@ const Index = () => {
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Trust & safety</p>
             <h2 className="mt-3 font-display text-3xl font-bold text-foreground md:text-4xl">
-              Why Namibian students choose Campus HQ
+              Why Namibian students choose Campus-CONNECT
             </h2>
           </div>
 

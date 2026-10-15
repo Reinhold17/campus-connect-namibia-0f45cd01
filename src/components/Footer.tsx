@@ -9,8 +9,8 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <img src={logo} alt="Campus HQ" className="h-9 w-9 rounded-lg bg-white object-contain p-1" />
-              <span className="font-display text-lg font-bold">Campus HQ</span>
+              <img src={logo} alt="Campus-CONNECT" className="h-9 w-9 rounded-lg bg-white object-contain p-1" />
+              <span className="font-display text-lg font-bold">Campus-CONNECT</span>
             </div>
             <p className="text-sm text-primary-foreground/70">
               Connecting Namibian students with verified tutors for in-person academic excellence.
@@ -55,7 +55,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t border-primary-foreground/10 pt-6 text-center text-sm text-primary-foreground/50">
-          © {new Date().getFullYear()} Campus HQ. All rights reserved.
+          © {new Date().getFullYear()} Campus-CONNECT. All rights reserved.
         </div>
       </div>
     </footer>

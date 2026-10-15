@@ -28,7 +28,7 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Campus HQ" className="h-9 w-9 object-contain" />
+          <img src={logo} alt="Campus-CONNECT" className="h-9 w-9 object-contain" />
           <span className="font-display text-lg font-bold text-foreground">
             Campus <span className="text-accent">HQ</span>
           </span>
